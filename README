@@ -1,0 +1,5 @@
+1. rake init
+動作に必要なgemをインストール
+
+2. rake run
+localhost:9393で起動
