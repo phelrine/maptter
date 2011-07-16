@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 require 'rubygems'
 require 'bundler/setup'
 require 'sinatra/base'
@@ -66,4 +67,21 @@ class Maptter < Sinatra::Base
     session.delete(:user_id)
   end
 
+  # Map API
+  get '/map/timeline' do 
+    # 対象マップのタイムラインを取得
+    # params : map_id 
+  end
+  
+  get '/map/friends' do
+    # 対象マップのfriends一覧を取得
+    # params : map_id 
+  end
+
+  post '/map/move' do
+    # 対象マップのユーザーの位置を変更
+    # params : map_id user_id top left
+  end
+
+  # Twitter API ...
 end
