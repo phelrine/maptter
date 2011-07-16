@@ -7,22 +7,13 @@ require 'models'
 
 class Maptter < Sinatra::Base
   configure do
-    use Rack::Session::Cookie, :secret => "change"
-    CONSUMER_KEY, CONSUMER_SECRET = File.open("consumer.cfg").read.split("\n")
+    use Rack::Session::Cookie, :secret => User::CONSUMER_SECRET
     MongoMapper.database = "maptter"
   end
   
   helpers do
-    def consumer
-      OAuth::Consumer.new(
-        CONSUMER_KEY,
-        CONSUMER_SECRET,
-        :site => "http://api.twitter.com"
-        )
-    end
-    
     def login? ; session[:user_id] != nil end
-    
+
     def login! ; redirect '/' unless login? end
 
     def current_usr
@@ -36,7 +27,7 @@ class Maptter < Sinatra::Base
   end
   
   get '/oauth' do
-    request_token = consumer.get_request_token(:oauth_callback => "http://localhost:9393/callback")
+    request_token = User.consumer.get_request_token(:oauth_callback => "http://localhost:9393/callback")
     session[:request_token] = request_token.token
     session[:request_secret] = request_token.secret
     redirect request_token.authorize_url
@@ -44,7 +35,7 @@ class Maptter < Sinatra::Base
 
   get '/callback' do
     request_token = OAuth::RequestToken.new(
-      consumer,
+      User.consumer,
       session[:request_token],
       session[:request_secret]
       )
