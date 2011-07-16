@@ -65,8 +65,13 @@ class Maptter < Sinatra::Base
   end
   
   get '/map/friends' do
-    # 対象マップのfriends一覧を取得
-    # params : map_id 
+    content_type :json
+    current_usr.current_map.friends.map{|m|
+      profile = current_usr.profile(m.user_id)
+      profile[:top] = m.top
+      profile[:left] = m.left
+      JSON.unparse profile.to_hash
+    }
   end
 
   post '/map/move' do
