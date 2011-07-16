@@ -19,6 +19,15 @@ class Maptter < Sinatra::Base
         :site => "http://api.twitter.com"
         )
     end
+    
+    def login? ; session[:user_id] != nil end
+    
+    def login! ; redirect '/' unless login? end
+
+    def current_usr
+      return nil unless login?
+      @current_usr ||= User.find_by_user_id(session[:user_id])
+    end
   end
 
   get '/' do
