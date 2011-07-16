@@ -1,5 +1,3 @@
-require 'mongo_mapper'
 require 'models/user'
-
-module Model
-end
+require 'models/map'
+require 'models/friend'
