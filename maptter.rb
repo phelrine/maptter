@@ -4,6 +4,6 @@ require 'sinatra/base'
 
 class Maptter < Sinatra::Base
   get '/' do
-    erb "Hello Maptter"
+    erb :index
   end
 end
