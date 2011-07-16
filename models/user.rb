@@ -71,4 +71,5 @@ class User
   def profile ; @profile ||= Profile.new(rubytter(:user, user_id)) end
 
   def profile(user_id); Profile.new(rubytter(:user, user_id)) end
+
 end
