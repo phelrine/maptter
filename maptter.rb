@@ -65,6 +65,7 @@ class Maptter < Sinatra::Base
 
   get '/logout' do
     session.delete(:user_id)
+    redirect '/'
   end
 
   # Map API
@@ -74,9 +75,10 @@ class Maptter < Sinatra::Base
   end
   
   get '/map/friends' do
+    halt 400 unless login?
     content_type :json
     JSON.unparse current_usr.current_map.friends.map{|m|
-      p profile = current_usr.profile(m.user_id)
+      profile = current_usr.profile(m.user_id)
       puts profile[:user_id]
       profile[:id] = m.id
       profile[:top] = m.top
