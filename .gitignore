@@ -1,3 +1,4 @@
 .bundle/
+consumer.cfg
 Gemfile.lock
 vendor/
