@@ -78,18 +78,28 @@ class Maptter < Sinatra::Base
     halt 400 unless login?
     content_type :json
     JSON.unparse current_usr.current_map.friends.map{|m|
-      profile = current_usr.profile(m.user_id)
-      puts profile[:user_id]
-      profile[:id] = m.id
+      profile = current_usr.profile(m.user_id).to_hash
+      profile[:friend_id] = m.id.to_s
       profile[:top] = m.top
       profile[:left] = m.left
-      profile.to_hash
+      profile
     }
   end
 
   post '/map/move' do
-    # 対象マップのユーザーの位置を変更
-    # params : map_id user_id top left
+    halt 400 unless login?
+    id = params[:friend_id]
+    
+    friend = current_usr.current_map.friends.to_a.find{|f| f.id.to_s == id}
+    if friend
+      friend.move(params[:top], params[:left])
+      params[:result] = true
+    else
+      params[:result] = false
+    end
+    
+    content_type :json
+    JSON.unparse params
   end
 
   # Twitter API ...
