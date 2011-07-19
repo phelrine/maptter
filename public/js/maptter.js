@@ -14,6 +14,19 @@ if(!window.maptter) window.maptter = {
 		func();
 	});
     },
+    initFriendsMap: function(){
+	maptter.getFriends(function(friends){
+	    $.each(friends, function(index, value){
+		var icon = maptter.makeDraggableIcon(value);
+		if(index == 0){
+		    icon.attr("id", "user-icon");
+		}
+		$(".map").append(icon);
+	    });
+	    maptter.updateNeighbor();
+	    maptter.getTimeline();
+	});
+    },		  
     getFriends: function(callback){
 	var self = this;
 	$.get("/map/friends", "", function(data, status){
@@ -35,6 +48,7 @@ if(!window.maptter) window.maptter = {
 	    }
 	});
 	self.neighbors = neighbors;
+	self.updateNeighborTimeline(self.allTimeline);
     },
     makeDraggableIcon: function(data){
 	var self = this;
@@ -59,7 +73,6 @@ if(!window.maptter) window.maptter = {
 			this.top = data.top;
 			this.left = data.left;
 			self.updateNeighbor();
-			self.updateNeighborTimeline(self.allTimeline);
 		    });
 		},
 		containment: "parent"
@@ -118,18 +131,8 @@ window.maptter.route({
     func: function(){
 	var maptter = window.maptter;
 	$(document).ready(function(){
-	    maptter.getFriends(function(friends){
-		$.each(friends, function(index, value){
-		    var icon = maptter.makeDraggableIcon(value);
-		    if(index == 0){
-			icon.attr("id", "user-icon");
-		    }
-		    $(".map").append(icon);
-		});
-		maptter.updateNeighbor();
-		maptter.getTimeline();
-		setInterval(maptter.getTimeline, 60000);
-	    });
+	    maptter.initFriendsMap();
+	    setInterval(maptter.getTimeline, 60000);
 	});
     }
 });
