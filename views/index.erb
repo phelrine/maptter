@@ -1,7 +1,10 @@
 maptter
 <% if login? %>
-<a href="/logout">logout</a>
-<div class="map"></div>
+<p><a href="/logout">logout</a></p>
+<div class="map" style="float: left;"></div>
+<div class="friends" style="float: left;"></div>
+<div style="clear: both"></div>
+<div class="timeline"></div>
 <% else %>
 <a href="/oauth">login</a>
 <% end %>

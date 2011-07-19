@@ -15,16 +15,17 @@ if(!window.maptter) window.maptter = {
 	});
     },
     initFriendsMap: function(){
-	maptter.getFriends(function(friends){
+	var self = this;
+	self.getFriends(function(friends){
 	    $.each(friends, function(index, value){
-		var icon = maptter.makeDraggableIcon(value);
+		var icon = self.makeDraggableIcon(value);
 		if(index == 0){
 		    icon.attr("id", "user-icon");
 		}
 		$(".map").append(icon);
 	    });
-	    maptter.updateNeighbor();
-	    maptter.getTimeline();
+	    self.updateNeighbor();
+	    self.getTimeline();
 	});
     },		  
     getFriends: function(callback){
@@ -40,8 +41,8 @@ if(!window.maptter) window.maptter = {
 	var friends = $(".icon");
 	var neighbors = [];
 	$.each(friends, function(index, friend){
-	    var squaredTop = Math.square(parseFloat(user.css("top")) - parseFloat(friends.css("top")));
-	    var squaredLeft = Math.square(parseFloat(user.css("left")) - parseFloat(friends.css("left")));
+	    var squaredTop = Math.square(parseFloat(user.css("top")) - parseFloat($(friend).css("top")));
+	    var squaredLeft = Math.square(parseFloat(user.css("left")) - parseFloat($(friend).css("left")));
 	    var length = Math.sqrt(squaredTop + squaredLeft);
 	    if(length < 100){
 		neighbors.push($(friend).data("user_id"));
@@ -110,7 +111,6 @@ if(!window.maptter) window.maptter = {
 	}
 	var neighborsTimeline = [];
 	$.each(timeline, function(index, tweet){
-	    //console.log(tweet.text);
 	    $.each(self.neighbors, function(index, neighbor){
 		if(neighbor == tweet.user.id_str){
 		    neighborsTimeline.push(tweet);
@@ -118,21 +118,69 @@ if(!window.maptter) window.maptter = {
 	    });
 	});
 	if(merge == true){
+	    var diff = [];
+	    $.merge(diff, neighborsTimeline);
 	    $.merge(neighborsTimeline, self.neighborsTimeline);
 	    self.neighborsTimeline = neighborsTimeline;
-	}
-	else
+	    diff.reverse();
+	    $.each(diff, function(index, tweet){
+		$(".timeline").prepend(self.makeTweet(tweet));
+	    });
+	}else{
 	    self.neighborsTimeline = neighborsTimeline;
+	    $(".timeline").empty();
+	    $.each(neighborsTimeline, function(index, tweet){
+		$(".timeline").append(self.makeTweet(tweet));
+	    });
+	}
+    },
+    makeTweet: function(tweet){
+	console.log(tweet);
+	return $("<p>").html(tweet.text);
     }
 };
 
 window.maptter.route({
     path: "/",
     func: function(){
-	var maptter = window.maptter;
 	$(document).ready(function(){
 	    maptter.initFriendsMap();
-	    setInterval(maptter.getTimeline, 60000);
+	    setInterval(maptter.getTimeline, 30000);
+	    $(".map").droppable({
+		accept: ":not(.icon)",
+		drop: function(event, ui){
+		    var friend = ui.helper.data("profile");
+		    var mapOffset = $(".map").offset();
+		    $.post("/map/add", {
+			user_id: friend.id_str,
+			top: ui.offset.top - mapOffset.top,
+			left: ui.offset.left - mapOffset.left
+		    },function(data, status){
+			$.extend(friend, data);
+			$(".map").append(maptter.makeDraggableIcon(friend));
+			ui.helper.remove();
+		    });
+		}
+	    });
+	    $.get("/twitter/friends", "", function(data){
+		maptter.friends = data;
+		for(var i = 50; i < 100; i++){
+		    $(".friends").append(
+			$("<img>")
+			    .data({profile: data[i]})
+			    .attr({
+				src: data[i].profile_image_url,
+				alt: data[i].screen_name,
+				title: data[i].screen_name
+			    })
+			    .css({
+				height: "48px",
+				width: "48px",
+			    })
+			    .draggable()
+		    );
+		}
+	    });
 	});
     }
 });

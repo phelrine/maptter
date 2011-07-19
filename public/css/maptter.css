@@ -5,9 +5,14 @@
     border: 1px solid;
 }
 
+.friends {
+    position: relative;
+    height: 480px;
+    width: 240px;
+    border: 1px solid;
+}
+
 .icon {
     position: absolute;
-    height: 73px;
-    width: 73px;
     border: 1px solid;
 }

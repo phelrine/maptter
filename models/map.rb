@@ -23,4 +23,12 @@ class Map
   def find_friend(friend_id)
     friends.to_a.find{|f| f.id.to_s == friend_id}
   end
+
+  def add_friend(friend_data)
+    friend = Friend.new(friend_data);
+    friend.save
+    friends << friend
+    save
+    friend.id
+  end
 end

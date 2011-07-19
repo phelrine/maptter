@@ -92,11 +92,26 @@ class Maptter < Sinatra::Base
     JSON.unparse params
   end
 
+  post '/map/add' do
+    halt 400 unless login?
+    
+    params[:friend_id] =current_usr.current_map.add_friend(params)
+    content_type :json 
+    JSON.unparse params
+  end
+  
   # Twitter API
   get '/twitter/timeline' do
     halt 400 unless login?
 
     content_type :json
     JSON.unparse current_usr.friends_timeline.to_a
+  end
+
+  get '/twitter/friends' do
+    halt 400 unless login?
+    
+    content_type :json
+    JSON.unparse current_usr.friends(current_usr.user_id).to_a
   end
 end
