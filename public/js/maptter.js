@@ -1,21 +1,45 @@
-if(!window.maptter) window.maptter = {};
+Math.square = function(x){
+    return x * x;
+}
 
-window.maptter.route = function() {
-    var pathname = location.pathname;
-    $.each(arguments, function(key){
-	var path = this.path;
-	var func = this.func;
+if(!window.maptter) window.maptter = {
+    route: function() {
+	var pathname = location.pathname;
+	$.each(arguments, function(key){
+	    var path = this.path;
+	    var func = this.func;
 	
-	if(!path || !func) return;
-	if(pathname === path || (path.test && path.test(pathname)))
-	    func();
-    });
-};
-
-window.maptter.Map = {
-    makeDraggableIcon : function(data){
+	    if(!path || !func) return;
+	    if(pathname === path || (path.test && path.test(pathname)))
+		func();
+	});
+    },
+    getFriends: function(callback){
+	var self = this;
+	$.get("/map/friends", "", function(data, status){
+	    callback(data, status);
+	});
+    },
+    neighbors: [],
+    updateNeighbor: function(){
+	var self = this;
+	var user = $("#user-icon");
+	var friends = $(".icon");
+	var neighbors = [];
+	$.each(friends, function(index, friend){
+	    var squaredTop = Math.square(parseFloat(user.css("top")) - parseFloat(friends.css("top")));
+	    var squaredLeft = Math.square(parseFloat(user.css("left")) - parseFloat(friends.css("left")));
+	    var length = Math.sqrt(squaredTop + squaredLeft);
+	    if(length < 100){
+		neighbors.push($(friend).data("user_id"));
+	    }
+	});
+	self.neighbors = neighbors;
+    },
+    makeDraggableIcon: function(data){
+	var self = this;
 	return $("<img>").addClass("icon")
-	    .data({friend_id: data.friend_id})
+	    .data({friend_id: data.friend_id, user_id: data.id_str})
 	    .attr({
 		src: data.profile_image_url,
 		alt: data.screen_name,
@@ -32,28 +56,79 @@ window.maptter.Map = {
 			top: ui.position.top,
 			left: ui.position.left
 		    }, function(data, status){
-			console.log(data);
+			this.top = data.top;
+			this.left = data.left;
+			self.updateNeighbor();
+			self.updateNeighborTimeline(self.allTimeline);
 		    });
 		},
 		containment: "parent"
 	    });
+    },
+    allTimeline: [],
+    neighborsTimeline: [],
+    getTimeline: function(){
+	var self = window.maptter;
+	$.get("/twitter/timeline", "", function(timeline, status){
+	    var diffTimeline = []
+	    var timelineLength = self.allTimeline.length;
+	    if(timelineLength == 0){
+		diffTimeline = timeline;
+	    }else{
+		var latestTweetID = parseInt(self.allTimeline[0].id_str);
+		var pos = 0;
+		$.each(timeline, function(index, tweet){
+		    if(latestTweetID < parseInt(tweet.id_str)){
+			diffTimeline.push(tweet);
+		    }
+		});
+	    }
+	    var latestTimeline = [];
+	    $.merge(latestTimeline, diffTimeline);
+	    $.merge(latestTimeline, self.allTimeline);
+	    self.allTimeline = latestTimeline;
+	    self.updateNeighborTimeline(diffTimeline, true);
+	});
+    },
+    updateNeighborTimeline: function(timeline, merge){
+	var self = this;
+	if(merge == undefined){
+	    merge == false;
+	}
+	var neighborsTimeline = [];
+	$.each(timeline, function(index, tweet){
+	    //console.log(tweet.text);
+	    $.each(self.neighbors, function(index, neighbor){
+		if(neighbor == tweet.user.id_str){
+		    neighborsTimeline.push(tweet);
+		}
+	    });
+	});
+	if(merge == true){
+	    $.merge(neighborsTimeline, self.neighborsTimeline);
+	    self.neighborsTimeline = neighborsTimeline;
+	}
+	else
+	    self.neighborsTimeline = neighborsTimeline;
     }
 };
 
 window.maptter.route({
     path: "/",
     func: function(){
-	var Map = window.maptter.Map;
+	var maptter = window.maptter;
 	$(document).ready(function(){
-	    $.get("/map/friends", "", function(data, status){
-		$.each(data, function(index, value){
-		    $(".map").append(
-			Map.makeDraggableIcon(
-			    value
-			)
-		    );
+	    maptter.getFriends(function(friends){
+		$.each(friends, function(index, value){
+		    var icon = maptter.makeDraggableIcon(value);
+		    if(index == 0){
+			icon.attr("id", "user-icon");
+		    }
+		    $(".map").append(icon);
 		});
-
+		maptter.updateNeighbor();
+		maptter.getTimeline();
+		setInterval(maptter.getTimeline, 60000);
 	    });
 	});
     }

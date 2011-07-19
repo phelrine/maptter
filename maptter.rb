@@ -69,11 +69,6 @@ class Maptter < Sinatra::Base
   end
 
   # Map API
-  get '/map/timeline' do 
-    # 対象マップのタイムラインを取得
-    # params : map_id 
-  end
-  
   get '/map/friends' do
     halt 400 unless login?
     content_type :json
@@ -102,5 +97,11 @@ class Maptter < Sinatra::Base
     JSON.unparse params
   end
 
-  # Twitter API ...
+  # Twitter API
+  get '/twitter/timeline' do
+    halt 400 unless login?
+
+    content_type :json
+    JSON.unparse current_usr.friends_timeline.to_a
+  end
 end
