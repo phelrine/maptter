@@ -211,6 +211,28 @@ window.maptter.route({
 		    });
 		}
 	    });
+<<<<<<< HEAD
+=======
+	    $.get("/twitter/friends", "", function(data){
+		maptter.friends = data;
+		for(var i = 0; i < data.length; i++){
+		    $(".friends").append(
+			$("<img>")
+			    .data({profile: data[i]})
+			    .attr({
+				src: data[i].profile_image_url,
+				alt: data[i].screen_name,
+				title: data[i].screen_name
+			    })
+			    .css({
+				height: "48px",
+				width: "48px",
+			    })
+			    .draggable()
+		    );
+		}
+	    });
+>>>>>>> test
 	});
     }
 });
