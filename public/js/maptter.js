@@ -188,7 +188,7 @@ window.maptter.route({
 		    var friend = ui.helper.data("profile");
 		    var mapOffset = $(".map").offset();
 		    if(maptter.friendIDs.indexOf(friend.id_str) == -1){
-			maptter.friendIDs.push(friend.user_id);
+			maptter.friendIDs.push(friend.id_str);
 		    }
 		    $.post("/map/add", {
 			user_id: friend.id_str,
@@ -197,8 +197,8 @@ window.maptter.route({
 		    },function(data, status){
 			$.extend(friend, data);
 			$(".map").append(maptter.makeDraggableIcon(friend));
-			ui.helper.remove();
 			maptter.updateNeighbors();
+			ui.helper.remove();
 		    });
 		}
 	    });
