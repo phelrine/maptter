@@ -68,9 +68,9 @@ class User
     }
   end
 
-  def friends_timeline
+  def friends_timeline(opt = {})
     Cache.get_or_set("friends-timeline-#{user_id}", 30){
-      rubytter(:friends_timeline).map{|status| status.to_hash}
+      rubytter(:friends_timeline, opt).map{|status| status.to_hash}
     }
   end
 end

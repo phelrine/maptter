@@ -51,7 +51,12 @@ if(!window.maptter) window.maptter = {
     neighborsTimeline: [],
     getTimeline: function(){
 	var self = window.maptter;
-	$.get("/twitter/timeline", "", function(timeline, status){
+	var params = {count: 100};
+	if(self.allTimeline.length != 0){
+	    params.since = self.allTimeline[0].created_at
+	    params.count = 40;
+	}
+	$.get("/twitter/timeline", params, function(timeline, status){
 	    var diffTimeline = []
 	    var timelineLength = self.allTimeline.length;
 	    self.updateActiveUsers(timeline);
@@ -171,7 +176,11 @@ if(!window.maptter) window.maptter = {
 	    });
     },
     makeTweet: function(tweet){
-	return $("<p>").html(tweet.text);
+	return $("<div>")
+	    .append($("<img>").attr({src: tweet.user.profile_image_url}).css({float: "left"}))
+	    .append($("<div>").html(tweet.user.screen_name + " " + tweet.user.name))
+	    .append($("<div>").html(tweet.text))
+	    .append($("<div>").css({clear: "both"}));
     }
 };
 

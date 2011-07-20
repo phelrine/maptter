@@ -105,8 +105,11 @@ class Maptter < Sinatra::Base
   # Twitter API
   get '/twitter/timeline' do
     halt 400 unless login?
-
+    opt = {}
+    %w[since count].each{|e| 
+      opt[e] = params[e] if params.has_key? e 
+    }
     content_type :json
-    JSON.unparse current_usr.friends_timeline.to_a
+    JSON.unparse current_usr.friends_timeline(opt)
   end
 end
