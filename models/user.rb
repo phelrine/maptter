@@ -58,18 +58,19 @@ class User
   
   class OAuthRevoked < Exception; end
   
-  def method_missing(name, *args)
-    rubytter(name, *args)
-  end
+  # def method_missing(name, *args)
+  #   rubytter(name, *args)
+  # end
   
-  class Profile
-    def initialize(data); @data = data end
-    def method_missing(name, *args); @data[name] end
-    def to_hash ; @data end
+  def profile(user_id = self.user_id)
+    Cache.get_or_set("profile-#{user_id}", 3600){
+      rubytter(:user, user_id).to_hash
+    }
   end
-  
-  def profile ; @profile ||= Profile.new(rubytter(:user, user_id)) end
 
-  def profile(user_id); Profile.new(rubytter(:user, user_id)) end
-
+  def friends_timeline
+    Cache.get_or_set("friends-timeline-#{user_id}", 30){
+      rubytter(:friends_timeline).map{|status| status.to_hash}
+    }
+  end
 end

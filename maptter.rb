@@ -73,7 +73,7 @@ class Maptter < Sinatra::Base
     halt 400 unless login?
     content_type :json
     JSON.unparse current_usr.current_map.get_friends.map{|friend|
-      friend.merge(current_usr.user(friend[:user_id]))
+      friend.merge(current_usr.profile(friend[:user_id]))
     }
   end
 
@@ -106,12 +106,5 @@ class Maptter < Sinatra::Base
 
     content_type :json
     JSON.unparse current_usr.friends_timeline.to_a
-  end
-
-  get '/twitter/friends' do
-    halt 400 unless login?
-    
-    content_type :json
-    JSON.unparse current_usr.friends(current_usr.user_id).to_a
   end
 end
