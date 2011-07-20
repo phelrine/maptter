@@ -40,7 +40,7 @@ if(!window.maptter) window.maptter = {
 	    var squaredTop = Math.square(parseFloat(user.css("top")) - parseFloat($(friend).css("top")));
 	    var squaredLeft = Math.square(parseFloat(user.css("left")) - parseFloat($(friend).css("left")));
 	    var length = Math.sqrt(squaredTop + squaredLeft);
-	    if(length < 100){
+	    if(length < 200){
 		neighborIDs.push($(friend).data("user_id"));
 	    }
 	});
@@ -132,6 +132,18 @@ if(!window.maptter) window.maptter = {
 	    });
 	}
     },
+    moveTasks: {},
+    saveMoveTasks: function(){
+	var self = window.maptter;
+	for(var dummy in self.moveTasks){
+	    $.post("/map/move",
+		   {tasks: JSON.stringify($.map(self.moveTasks, function(value, key){return value;}))},
+		   function(data, status){
+		       self.moveTasks = {};
+		   });
+	    return
+	}
+    },
     makeDraggableIcon: function(data){
 	var self = this;
 	return $("<img>").addClass("icon")
@@ -147,15 +159,13 @@ if(!window.maptter) window.maptter = {
 	    })
 	    .draggable({
 		stop: function(e, ui){
-		    $.post("/map/move", {
-			friend_id: $(this).data("friend_id"),
+		    var friend = $(this);
+		    self.moveTasks[friend.data("user_id")] = {
+			friend_id: friend.data("friend_id"),
 			top: ui.position.top,
 			left: ui.position.left
-		    }, function(data, status){
-			this.top = data.top;
-			this.left = data.left;
-			self.updateNeighbors();
-		    });
+		    };
+		    self.updateNeighbors();
 		},
 		containment: "parent"
 	    });
@@ -171,6 +181,7 @@ window.maptter.route({
 	$(document).ready(function(){
 	    maptter.initFriendsMap();
 	    setInterval(maptter.getTimeline, 30000);
+	    setInterval(maptter.saveMoveTasks, 10000);
 	    $(".map").droppable({
 		accept: ":not(.icon)",
 		drop: function(event, ui){
@@ -187,6 +198,7 @@ window.maptter.route({
 			$.extend(friend, data);
 			$(".map").append(maptter.makeDraggableIcon(friend));
 			ui.helper.remove();
+			maptter.updateNeighbors();
 		    });
 		}
 	    });

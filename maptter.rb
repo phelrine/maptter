@@ -79,15 +79,17 @@ class Maptter < Sinatra::Base
 
   post '/map/move' do
     halt 400 unless login?
-    
-    friend = current_usr.current_map.find_friend(params[:friend_id])
-    if friend
-      friend.move(params[:top], params[:left])
-      params[:result] = true
-    else
-      params[:result] = false
-    end
-    
+    JSON.parse(params[:tasks]).each{|task|
+      task.symbolize_keys!
+      friend = current_usr.current_map.find_friend(task[:friend_id])
+      if friend
+        friend.move(task[:top], task[:left])
+        params[:result] = true
+      else
+        params[:result] = false
+      end
+    }
+
     content_type :json
     JSON.unparse params
   end
