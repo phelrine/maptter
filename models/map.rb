@@ -2,8 +2,9 @@ require 'mongo_mapper'
 
 class Map
   include MongoMapper::EmbeddedDocument
+  key :list_name, String
   many :friends
-  
+
   def init(user)
     friends << Friend.new(user)
     save
@@ -11,7 +12,7 @@ class Map
 
   def get_friends
     friends.map{|friend|
-      { 
+      {
         :user_id => friend.user_id,
         :friend_id => friend.id.to_s,
         :top => friend.top,
