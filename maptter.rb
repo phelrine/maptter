@@ -116,6 +116,7 @@ class Maptter < Sinatra::Base
     %w[in_reply_to_status_id].each{|key|
       opt[key] = params[key] if params.has_key? key
     }
+    content_type :json
     JSON.unparse current_user.tweet(params[:tweet], opt)
   end
 end
