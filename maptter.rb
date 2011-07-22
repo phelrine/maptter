@@ -16,18 +16,9 @@ class Maptter < Sinatra::Base
 
     def login! ; redirect '/' unless login? end
 
-    def current_usr
+    def current_user
       return nil unless login?
-      @current_usr ||= User.find_by_user_id(session[:user_id])
-    end
-    
-    def login? ; session[:user_id] != nil end
-    
-    def login! ; redirect '/' unless login? end
-
-    def current_usr
-      return nil unless login?
-      @current_usr ||= User.find_by_user_id(session[:user_id])
+      @current_user ||= User.find_by_user_id(session[:user_id])
     end
   end
 
@@ -72,8 +63,8 @@ class Maptter < Sinatra::Base
   get '/map/friends' do
     halt 400 unless login?
     content_type :json
-    JSON.unparse current_usr.current_map.get_friends.map{|friend|
-      friend.merge(current_usr.profile(friend[:user_id]))
+    JSON.unparse current_user.current_map.get_friends.map{|friend|
+      friend.merge(current_user.profile(friend[:user_id]))
     }
   end
 
@@ -81,7 +72,7 @@ class Maptter < Sinatra::Base
     halt 400 unless login?
     JSON.parse(params[:tasks]).each{|task|
       task.symbolize_keys!
-      friend = current_usr.current_map.find_friend(task[:friend_id])
+      friend = current_user.current_map.find_friend(task[:friend_id])
       if friend
         friend.move(task[:top], task[:left])
         params[:result] = true
@@ -97,7 +88,7 @@ class Maptter < Sinatra::Base
   post '/map/add' do
     halt 400 unless login?
     
-    params[:friend_id] =current_usr.current_map.add_friend(params)
+    params[:friend_id] =current_user.current_map.add_friend(params)
     content_type :json 
     JSON.unparse params
   end
@@ -110,6 +101,6 @@ class Maptter < Sinatra::Base
       opt[e] = params[e] if params.has_key? e 
     }
     content_type :json
-    JSON.unparse current_usr.friends_timeline(opt)
+    JSON.unparse current_user.friends_timeline(opt)
   end
 end
