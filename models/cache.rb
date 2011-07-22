@@ -18,6 +18,10 @@ module Cache
     new_value || yield
   end
 
+  def self.set(key, value, expire)
+    self.instance.set(key, value, expire)
+  end
+  
   def self.delete(key)
     self.instance.delete(key)
   end
