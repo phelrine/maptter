@@ -30,12 +30,6 @@ class User
     save
     default_map.add_member({:user_id => user_id, :top => 0.5, :left => 0.5})
   end
-  
-  def login(token, secret)
-    access_token = token
-    access_secret = secret
-    save
-  end
 
   def current_map ; maps.first end
   

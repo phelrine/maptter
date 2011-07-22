@@ -46,7 +46,9 @@ class Maptter < Sinatra::Base
       :oauth_verifier => params[:oauth_verifier]
       )
     user = User.find_or_create_by_user_id(access_token.params[:user_id])
-    user.login(access_token.token, access_token.secret)
+    user.access_token = access_token.token
+    user.access_secret = access_token.secret
+
     user.create_default_map
     session[:user_id] = user.user_id
     session.delete(:request_token)
