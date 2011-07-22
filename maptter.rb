@@ -92,7 +92,13 @@ class Maptter < Sinatra::Base
     content_type :json 
     JSON.unparse params
   end
-  
+
+  post '/map/remove' do
+    halt 400 unless login?
+
+    content_type :json
+    JSON.unparse current_user.current_map.remove_member(params[:friend_id])
+  end
   # Twitter API
   get '/twitter/timeline' do
     halt 400 unless login?

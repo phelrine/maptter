@@ -51,4 +51,16 @@ class Map
     owner.rubytter(:add_member_to_list, owner.user_id, list_name, friend_data[:user_id])
     friend.id
   end
+
+  def remove_member(friend_id)
+    
+    index = friends.index{|f| f.id.to_s == friend_id }
+    return {:result => false } unless index
+    friend = friends[index]
+    owner.rubytter(:remove_member_from_list, owner.user_id, list_name, friend.user_id)
+    hash = {:result => true, :user_id => friend.user_id}
+    friends.delete_at(index)
+    save
+    hash
+  end
 end
