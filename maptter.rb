@@ -64,7 +64,7 @@ class Maptter < Sinatra::Base
   get '/map/friends' do
     halt 400 unless login?
     content_type :json
-    JSON.unparse current_user.current_map.get_friends.map{|friend|
+    JSON.unparse current_user.current_map.get_members.map{|friend|
       friend.merge(current_user.profile(friend[:user_id]))
     }
   end
@@ -73,7 +73,7 @@ class Maptter < Sinatra::Base
     halt 400 unless login?
     JSON.parse(params[:tasks]).each{|task|
       task.symbolize_keys!
-      friend = current_user.current_map.find_friend(task[:friend_id])
+      friend = current_user.current_map.find_member(task[:friend_id])
       if friend
         friend.move(task[:top], task[:left])
         params[:result] = true
@@ -89,7 +89,7 @@ class Maptter < Sinatra::Base
   post '/map/add' do
     halt 400 unless login?
     
-    params[:friend_id] =current_user.current_map.add_friend(params)
+    params[:friend_id] =current_user.current_map.add_member(params)
     content_type :json 
     JSON.unparse params
   end
