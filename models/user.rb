@@ -34,7 +34,7 @@ class User
   def login(token, secret)
     access_token = token
     access_secret = secret
-    user.save
+    save
   end
 
   def current_map ; maps.first end
