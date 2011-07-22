@@ -12,7 +12,6 @@ class User
   many :maps
 
   attr_protected :access_token, :access_secret
-  after_create :create_default_map
   
   def self.consumer
     OAuth::Consumer.new(
@@ -24,7 +23,9 @@ class User
   
   def create_default_map
     return unless maps.size == 0
-    default_map = Map.new
+    default_map = Map.new({:list_name => "maptter-list"})
+    p rubytter(:create_list, user_id ,default_map.list_name)
+    p rubytter(:add_member_to_list, user_id, default_map.list_name, user_id)
     default_map.init({:user_id => user_id, :top => 0.5, :left => 0.5})
     maps << default_map
     save

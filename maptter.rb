@@ -48,6 +48,7 @@ class Maptter < Sinatra::Base
 
     user = User.find_or_create_by_user_id(access_token.params[:user_id])
     user.login(access_token.token, access_token.secret)
+    user.create_default_map
     session[:user_id] = user.user_id
     session.delete(:request_token)
     session.delete(:request_secret)
