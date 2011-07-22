@@ -211,6 +211,10 @@ window.maptter.route({
 		    });
 		}
 	    });
+	    $("#tweet-post-form").submit(function(){
+		$.post("/twitter/update", $('#tweet-post-form').serialize());
+		return false;
+	    });
 	});
     }
 });

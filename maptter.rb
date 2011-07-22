@@ -103,4 +103,13 @@ class Maptter < Sinatra::Base
     content_type :json
     JSON.unparse current_user.friends_timeline(opt)
   end
+
+  post '/twitter/update' do
+    halt 400 unless login?
+    opt = {}
+    [:in_reply_status_id].each{|key|
+      opt[key] = params[key] if params.has_key? key
+    }
+    JSON.unparse current_user.tweet(params[:tweet], opt)
+  end
 end

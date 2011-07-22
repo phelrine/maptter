@@ -1,6 +1,10 @@
 maptter
 <% if login? %>
 <p><a href="/logout">logout</a></p>
+<form method="POST" id="tweet-post-form" action="/twitter/update">
+  <textarea name="tweet" rows="5" cols="80"></textarea>
+  <input type="submit" value="tweet" />
+</form>
 <div class="map" style="float: left;"></div>
 <div class="friends" style="float: left;"></div>
 <div style="clear: both"></div>

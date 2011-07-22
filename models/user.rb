@@ -73,4 +73,8 @@ class User
       rubytter(:friends_timeline, opt).map{|status| status.to_hash}
     }
   end
+
+  def tweet(status, opt = {})
+    rubytter(:update, status, opt)
+  end
 end
