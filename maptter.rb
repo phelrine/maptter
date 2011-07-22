@@ -45,7 +45,6 @@ class Maptter < Sinatra::Base
       :oauth_token => params[:oauth_token],
       :oauth_verifier => params[:oauth_verifier]
       )
-
     user = User.find_or_create_by_user_id(access_token.params[:user_id])
     user.login(access_token.token, access_token.secret)
     user.create_default_map
@@ -64,9 +63,7 @@ class Maptter < Sinatra::Base
   get '/map/friends' do
     halt 400 unless login?
     content_type :json
-    JSON.unparse current_user.current_map.get_members.map{|friend|
-      friend.merge(current_user.profile(friend[:user_id]))
-    }
+    JSON.unparse current_user.current_map.get_members
   end
 
   post '/map/move' do

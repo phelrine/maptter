@@ -7,13 +7,18 @@ class Map
   many :friends
 
   def get_members
+    user = User.find(user_id)
+    profiles = {}
+    user.rubytter(:list_members, user.user_id, list_name)[:users].to_a.each{|profile|
+      profiles[profile.id_str] = profile
+    }
     friends.map{|friend|
-      {
-        :user_id => friend.user_id,
-        :friend_id => friend.id.to_s,
-        :top => friend.top,
-        :left => friend.left,
-      }
+      profiles[friend.user_id].merge({
+          :user_id => friend.user_id,
+          :friend_id => friend.id.to_s,
+          :top => friend.top,
+          :left => friend.left,
+        })
     }
   end
 
