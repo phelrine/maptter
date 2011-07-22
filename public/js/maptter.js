@@ -71,6 +71,9 @@ if(!window.maptter) window.maptter = {
 		    }
 		});
 	    }
+	    if(diffTimeline.length > 0){
+		$(".tmp").remove();
+	    }
 	    var latestTimeline = [];
 	    $.merge(latestTimeline, diffTimeline);
 	    $.merge(latestTimeline, self.allTimeline);
@@ -216,7 +219,10 @@ window.maptter.route({
 		}
 	    });
 	    $("#tweet-post-form").submit(function(){
-		$.post("/twitter/update", $('#tweet-post-form').serialize());
+		$.post("/twitter/update", $('#tweet-post-form').serialize(), function(tweet, status){
+		    $("#tweet-post-form textarea[name=tweet]").val("");
+		    $(".timeline").prepend(maptter.makeTweet(tweet).addClass("tmp"));
+		});
 		return false;
 	    });
 	});
