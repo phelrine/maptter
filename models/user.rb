@@ -32,8 +32,9 @@ class User
   end
   
   def login(token, secret)
-    set(:access_token => token)
-    set(:access_secret => secret)
+    access_token = token
+    access_secret = secret
+    user.save
   end
 
   def current_map ; maps.first end
