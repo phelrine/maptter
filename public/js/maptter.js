@@ -180,6 +180,10 @@ if(!window.maptter) window.maptter = {
 	    .append($("<img>").attr({src: tweet.user.profile_image_url}).css({float: "left"}))
 	    .append($("<div>").html(tweet.user.screen_name + " " + tweet.user.name))
 	    .append($("<div>").html(tweet.text))
+	    .append($("<a>").attr({href: "#"}).html("reply").click(function(){
+		$("#tweet-post-form input[name=in_reply_to_status_id]").val(tweet.id_str);
+		$("#tweet-post-form textarea[name=tweet]").val("@" + tweet.user.screen_name + " ");
+	    }))
 	    .append($("<div>").css({clear: "both"}));
     }
 };
