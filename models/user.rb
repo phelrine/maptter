@@ -23,12 +23,11 @@ class User
   
   def create_default_map
     return unless maps.size == 0
-    default_map = Map.new({:list_name => "maptter-list"})
-    rubytter(:create_list, user_id ,default_map.list_name)
-    rubytter(:add_member_to_list, user_id, default_map.list_name, user_id)
-    maps << default_map
+    list = rubytter(:create_list, user_id ,"maptter-list")
+    map = Map.new({:list_id => list[:id_str]})
+    maps.push(map)
     save
-    default_map.add_member({:user_id => user_id, :top => 0.5, :left => 0.5})
+    map.add_member({:user_id => user_id, :top => 0.5, :left => 0.5})
   end
 
   def current_map ; maps.first end

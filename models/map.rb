@@ -3,7 +3,7 @@ require 'mongo_mapper'
 class Map
   include MongoMapper::Document
   belongs_to :user
-  key :list_name, String
+  key :list_id, String
   many :friends
 
   def owner
@@ -15,7 +15,7 @@ class Map
       profiles = {}
       has_next = -1
       while has_next != 0
-        list_members = owner.rubytter(:list_members, owner.user_id, list_name, {
+        list_members = owner.rubytter(:list_members, owner.user_id, list_id, {
             :cursor => has_next
           })
         has_next = list_members[:next_cursor]
@@ -29,7 +29,12 @@ class Map
   
   def get_members
     friends.map{|friend|
-      member_profiles[friend.user_id].merge({
+      profile = member_profiles[friend.user_id]
+      unless profile 
+        owner.rubytter(:add_member_to_list, owner.user_id, list_id, friend.user_id)
+        profile = owner.profile(friend.user_id)
+      end
+      profile.merge({
           :user_id => friend.user_id,
           :friend_id => friend.id.to_s,
           :top => friend.top,
@@ -44,23 +49,23 @@ class Map
 
   def add_member(friend_data)
     friend_data.symbolize_keys
+    owner.rubytter(:add_member_to_list, owner.user_id, list_id, friend_data[:user_id])
     friend = Friend.new(friend_data);
+    friends.push(friend)
     friend.save
-    friends << friend
     save
-    owner.rubytter(:add_member_to_list, owner.user_id, list_name, friend_data[:user_id])
     friend.id
   end
 
   def remove_member(friend_id)
-    
     index = friends.index{|f| f.id.to_s == friend_id }
     return {:result => false } unless index
+    
     friend = friends[index]
-    owner.rubytter(:remove_member_from_list, owner.user_id, list_name, friend.user_id)
-    hash = {:result => true, :user_id => friend.user_id}
+    owner.rubytter(:remove_member_from_list, owner.user_id, list_id, friend.user_id)
+    result = {:result => true, :user_id => friend.user_id}
     friends.delete_at(index)
     save
-    hash
+    result
   end
 end
