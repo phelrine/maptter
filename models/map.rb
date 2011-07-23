@@ -57,7 +57,11 @@ class Map
     end
     owner.rubytter(:add_member_to_list, owner.user_id, list_id, friend_data[:user_id])
     Model.logger.info "ADD_MEMBER: #{list_id} #{friend_data[:user_id]}"
-    friend = Friend.new(friend_data);
+    friend = Friend.new(%w[user_id top left].map(&:to_sym).inject({}){|data, key|
+        raise "friend must have #{key}" unless friend_data.has_key? key
+        data[key] = friend_data[key]
+        data
+      });
     friends.push(friend)
     save
     friend.id
