@@ -30,14 +30,12 @@ class Map
   
   def get_members
     friends.map{|friend|
-      profile = member_profiles[friend.user_id]
-      unless profile 
+      member_profiles.fetch(friend.user_id){
         Model.logger.warn "profile not found: #{friend.user_id}"
         owner.rubytter(:add_member_to_list, owner.user_id, list_id, friend.user_id)
         Cache.delete("list-#{id}")
         profile = owner.profile(friend.user_id)
-      end
-      profile.merge({
+      }.merge({
           :user_id => friend.user_id,
           :friend_id => friend.id.to_s,
           :top => friend.top,
@@ -55,6 +53,7 @@ class Map
     if friend_data.has_key? :profile
       profile = friend_data[:profile].symbolize_keys
       Cache.set("list-#{id}", member_profiles.merge({profile[:id_str] => profile}), 3600)
+      friend_data.delete(:profile)
     end
     owner.rubytter(:add_member_to_list, owner.user_id, list_id, friend_data[:user_id])
     Model.logger.info "ADD_MEMBER: #{list_id} #{friend_data[:user_id]}"
