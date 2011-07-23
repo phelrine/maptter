@@ -246,5 +246,9 @@ window.maptter.route({
 		}
 	    });
 	});
+
+	$(window).unload(function(){
+	    maptter.saveMoveTasks();
+	});
     }
 });
