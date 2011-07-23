@@ -16,3 +16,7 @@
     position: absolute;
     border: 1px solid;
 }
+
+.slider {
+    width: 640px;
+}

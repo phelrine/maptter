@@ -31,6 +31,7 @@ if(!window.maptter) window.maptter = {
 	});
     },		  
     neighborIDs: [],
+    neighborLength: 200,
     updateNeighbors: function(){
 	var self = this;
 	var user = $("#user-icon");
@@ -40,7 +41,7 @@ if(!window.maptter) window.maptter = {
 	    var squaredTop = Math.square(parseFloat(user.css("top")) - parseFloat($(friend).css("top")));
 	    var squaredLeft = Math.square(parseFloat(user.css("left")) - parseFloat($(friend).css("left")));
 	    var length = Math.sqrt(squaredTop + squaredLeft);
-	    if(length < 200){
+	    if(length < self.neighborLength){
 		neighborIDs.push($(friend).data("user_id"));
 	    }
 	});
@@ -230,6 +231,19 @@ window.maptter.route({
 		    $(".timeline").prepend(maptter.makeTweet(tweet).addClass("tmp"));
 		});
 		return false;
+	    });
+	    $(".slider").slider({
+		range: "min",
+		min: 0,
+		max: 640,
+		value: maptter.neighborLength,
+		slide: function(event, ui){
+		    $("#slider-length-display").text("Length: " + ui.value);
+		},
+		stop: function(event, ui){
+		    maptter.neighborLength = ui.value;
+		    maptter.updateNeighbors();
+		}
 	    });
 	});
     }
