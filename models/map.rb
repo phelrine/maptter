@@ -23,6 +23,7 @@ class Map
           profiles[profile.id_str] = profile.to_hash
         }
       end
+      Model.logger.info "LIST_MEMBER: #{id}"
       profiles
     }
   end
@@ -31,6 +32,7 @@ class Map
     friends.map{|friend|
       profile = member_profiles[friend.user_id]
       unless profile 
+        Model.logger.warn "profile not found: #{friend.user_id}"
         owner.rubytter(:add_member_to_list, owner.user_id, list_id, friend.user_id)
         profile = owner.profile(friend.user_id)
       end
@@ -50,6 +52,7 @@ class Map
   def add_member(friend_data)
     friend_data.symbolize_keys
     owner.rubytter(:add_member_to_list, owner.user_id, list_id, friend_data[:user_id])
+    Model.logger.info "ADD_MEMBER: #{list_id} #{friend_data[:user_id]}"
     friend = Friend.new(friend_data);
     friends.push(friend)
     friend.save
@@ -59,10 +62,14 @@ class Map
 
   def remove_member(friend_id)
     index = friends.index{|f| f.id.to_s == friend_id }
-    return {:result => false } unless index
-    
+    unless index
+      Model.logger.warn "user not found #{friend_id}"
+      return {:result => false } 
+    end
+
     friend = friends[index]
     owner.rubytter(:remove_member_from_list, owner.user_id, list_id, friend.user_id)
+    Model.logger.info "REMOVE_MEMBER: #{list_id} #{friend.user_id}"
     result = {:result => true, :user_id => friend.user_id}
     friends.delete_at(index)
     save

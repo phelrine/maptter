@@ -46,6 +46,7 @@ class User
       if error.message == "Could not authenticate with OAuth."
         raise OAuthRevoked.new(error.message)
       else
+        Model.logger.warn "api error: #{error.message}"
         raise error
       end
     end
@@ -53,23 +54,22 @@ class User
   
   class OAuthRevoked < Exception; end
   
-  # def method_missing(name, *args)
-  #   rubytter(name, *args)
-  # end
-  
   def profile(user_id = self.user_id)
     Cache.get_or_set("profile-#{user_id}", 3600){
+      Model.logger.info "PROFILE: #{user_id}"
       rubytter(:user, user_id).to_hash
     }
   end
 
   def friends_timeline(opt = {})
     Cache.get_or_set("friends-timeline-#{user_id}", 30){
+      Model.logger.info "FRIENDS_TIMELINE: #{user_id}"
       rubytter(:friends_timeline, opt).map{|status| status.to_hash}
     }
   end
 
   def tweet(status, opt = {})
+    Model.logger.info "TWEET:#{user_id} #{status}"
     rubytter(:update, status, opt)
   end
 end
