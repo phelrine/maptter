@@ -183,9 +183,9 @@ if(!window.maptter) window.maptter = {
     makeTweet: function(tweet){
 	return $("<div>")
 	    .append($("<img>").attr({src: tweet.user.profile_image_url}).css({float: "left"}))
-	    .append($("<div>").html(tweet.user.screen_name + " " + tweet.user.name))
-	    .append($("<div>").html(tweet.text))
-	    .append($("<a>").attr({href: "#"}).html("reply").click(function(){
+	    .append($("<div>").text(tweet.user.screen_name + " " + tweet.user.name))
+	    .append($("<div>").text(tweet.text))
+	    .append($("<a>").attr({href: "#"}).text("reply").click(function(){
 		$("#tweet-post-form input[name=in_reply_to_status_id]").val(tweet.id_str);
 		$("#tweet-post-form textarea[name=tweet]").val("@" + tweet.user.screen_name + " ");
 	    }))
