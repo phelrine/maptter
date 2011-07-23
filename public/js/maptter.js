@@ -9,9 +9,12 @@ if(!window.maptter) window.maptter = {
 	    var path = this.path;
 	    var func = this.func;
 	
-	    if(!path || !func) return;
-	    if(pathname === path || (path.test && path.test(pathname)))
+	    if(!path || !func){
+		return;
+	    }
+	    if(pathname === path || (path.test && path.test(pathname))){
 		func();
+	    }
 	});
     },
     friendIDs: [],
@@ -20,7 +23,7 @@ if(!window.maptter) window.maptter = {
 	$.get("/map/friends", "", function(friends, status){
 	    $.each(friends, function(index, friend){
 		var icon = self.makeDraggableIcon(friend);
-		if(index == 0){
+		if(index === 0){
 		    icon.attr("id", "user-icon");
 		}
 		$(".map").append(icon);
@@ -53,8 +56,10 @@ if(!window.maptter) window.maptter = {
     getTimeline: function(){
 	var self = window.maptter;
 	var params = {count: 100};
-	if($(".ui-draggable-dragging").length > 0) return;
-	if(self.allTimeline.length != 0){
+	if($(".ui-draggable-dragging").length > 0){
+	    return;
+	}
+	if(self.allTimeline.length !== 0){
 	    params.since = self.allTimeline[0].created_at;
 	    params.count = 40;
 	}
@@ -62,7 +67,7 @@ if(!window.maptter) window.maptter = {
 	    var diffTimeline = [];
 	    var timelineLength = self.allTimeline.length;
 	    self.updateActiveUsers(timeline);
-	    if(timelineLength == 0){
+	    if(timelineLength === 0){
 		diffTimeline = timeline;
 	    }else{
 		var latestTweetID = parseInt(self.allTimeline[0].id_str, 10);
@@ -86,7 +91,7 @@ if(!window.maptter) window.maptter = {
     updateActiveUsers: function(timeline){
 	var self = this;
 	var users = {};
-	if(timeline == undefined){
+	if(timeline === undefined){
 	    timeline = this.allTimeline;
 	}
 	$.each(timeline, function(index, tweet){
@@ -100,7 +105,7 @@ if(!window.maptter) window.maptter = {
 	    $(".friends").append(
 		$("<img>").draggable({
 		    revert: "invalid",
-		    opacity: 0.5,
+		    opacity: 0.5
 		})
 		    .data({profile: user})
 		    .attr({
@@ -117,18 +122,18 @@ if(!window.maptter) window.maptter = {
     },
     updateNeighborsTimeline: function(timeline, merge){
 	var self = this;
-	if(merge == undefined){
+	if(merge === undefined){
 	    merge = false;
 	}
 	var neighborsTimeline = [];
 	$.each(timeline, function(index, tweet){
 	    $.each(self.neighborIDs, function(index, neighbor){
-		if(neighbor == tweet.user.id_str){
+		if(neighbor === tweet.user.id_str){
 		    neighborsTimeline.push(tweet);
 		}
 	    });
 	});
-	if(merge == true){
+	if(merge === true){
 	    var diff = [];
 	    $.merge(diff, neighborsTimeline);
 	    $.merge(neighborsTimeline, self.neighborsTimeline);
@@ -148,15 +153,17 @@ if(!window.maptter) window.maptter = {
     moveTasks: {},
     saveMoveTasks: function(){
 	var self = window.maptter;
-	if($(".ui-draggable-dragging").length > 0) return;
-	for(var dummy in self.moveTasks){
-	    $.post("/map/move",
-		   {tasks: JSON.stringify($.map(self.moveTasks, function(value, key){return value;}))},
-		   function(data, status){
-		       self.moveTasks = {};
-		   });
+	if($(".ui-draggable-dragging").length > 0){
 	    return;
 	}
+	if($.isEmptyObject(self.moveTasks)){
+	    return;
+	}
+	$.post("/map/move",{
+	    tasks: JSON.stringify($.map(self.moveTasks, function(value, key){return value;}))
+	}, function(data, status){
+	    self.moveTasks = {};
+	});
     },
     makeDraggableIcon: function(data){
 	var self = this;
@@ -165,7 +172,7 @@ if(!window.maptter) window.maptter = {
 	    .attr({
 		src: data.profile_image_url,
 		alt: data.screen_name,
-		title: data.screen_name,
+		title: data.screen_name
 	    })
 	    .css({
 		top: data.top,
@@ -211,7 +218,7 @@ window.maptter.route({
 		    ui.helper.draggable({disabled: true}).attr({src: "img/loading.gif"});
 		    var friend = ui.helper.data("profile");
 		    var mapOffset = $(".map").offset();
-		    if(maptter.friendIDs.indexOf(friend.id_str) == -1){
+		    if(maptter.friendIDs.indexOf(friend.id_str) === -1){
 			maptter.friendIDs.push(friend.id_str);
 		    }
 		    $.post("/map/add", {
@@ -221,7 +228,7 @@ window.maptter.route({
 			profile: friend
 		    }, function(data, status){
 			$.extend(friend, data);
-			var icon = maptter.makeDraggableIcon(friend).hide()
+			var icon = maptter.makeDraggableIcon(friend).hide();
 			$(".map").append(icon);
 			ui.helper.remove();
 			icon.fadeIn('slow');
