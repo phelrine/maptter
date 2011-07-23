@@ -201,6 +201,7 @@ window.maptter.route({
 	    $(".map").droppable({
 		accept: ":not(.icon)",
 		drop: function(event, ui){
+		    ui.helper.draggable({disabled: true}).attr({src: "img/loading.gif"});
 		    var friend = ui.helper.data("profile");
 		    var mapOffset = $(".map").offset();
 		    if(maptter.friendIDs.indexOf(friend.id_str) == -1){
@@ -209,12 +210,15 @@ window.maptter.route({
 		    $.post("/map/add", {
 			user_id: friend.id_str,
 			top: ui.offset.top - mapOffset.top,
-			left: ui.offset.left - mapOffset.left
-		    },function(data, status){
+			left: ui.offset.left - mapOffset.left,
+			profile: friend
+		    }, function(data, status){
 			$.extend(friend, data);
-			$(".map").append(maptter.makeDraggableIcon(friend));
-			maptter.updateNeighbors();
+			var icon = maptter.makeDraggableIcon(friend).hide()
+			$(".map").append(icon);
 			ui.helper.remove();
+			icon.fadeIn('slow');
+			maptter.updateNeighbors();
 		    });
 		}
 	    });
