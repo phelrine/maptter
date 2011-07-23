@@ -55,7 +55,6 @@ class Map
     Model.logger.info "ADD_MEMBER: #{list_id} #{friend_data[:user_id]}"
     friend = Friend.new(friend_data);
     friends.push(friend)
-    friend.save
     save
     friend.id
   end
