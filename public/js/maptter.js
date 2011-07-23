@@ -98,7 +98,10 @@ if(!window.maptter) window.maptter = {
 	$(".friends").empty();
 	$.each(users, function(key, user){
 	    $(".friends").append(
-		$("<img>").draggable()
+		$("<img>").draggable({
+		    revert: "invalid",
+		    opacity: 0.5,
+		})
 		    .data({profile: user})
 		    .attr({
 			src: user.profile_image_url,
@@ -169,6 +172,7 @@ if(!window.maptter) window.maptter = {
 		left: data.left
 	    })
 	    .draggable({
+		stack: ".icon",
 		stop: function(e, ui){
 		    var friend = $(this);
 		    self.moveTasks[friend.data("user_id")] = {
@@ -234,8 +238,8 @@ window.maptter.route({
 	    });
 	    $(".slider").slider({
 		range: "min",
-		min: 0,
-		max: 640,
+		min: 100,
+		max: 600,
 		value: maptter.neighborLength,
 		slide: function(event, ui){
 		    $("#slider-length-display").text("Length: " + ui.value);
