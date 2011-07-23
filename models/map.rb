@@ -34,6 +34,7 @@ class Map
       unless profile 
         Model.logger.warn "profile not found: #{friend.user_id}"
         owner.rubytter(:add_member_to_list, owner.user_id, list_id, friend.user_id)
+        Cache.delete("list-#{id}")
         profile = owner.profile(friend.user_id)
       end
       profile.merge({
@@ -50,7 +51,11 @@ class Map
   end
 
   def add_member(friend_data)
-    friend_data.symbolize_keys
+    friend_data.symbolize_keys!
+    if friend_data.has_key? :profile
+      profile = friend_data[:profile].symbolize_keys
+      Cache.set("list-#{id}", member_profiles.merge({profile[:id_str] => profile}), 3600)
+    end
     owner.rubytter(:add_member_to_list, owner.user_id, list_id, friend_data[:user_id])
     Model.logger.info "ADD_MEMBER: #{list_id} #{friend_data[:user_id]}"
     friend = Friend.new(friend_data);
@@ -63,7 +68,7 @@ class Map
     index = friends.index{|f| f.id.to_s == friend_id }
     unless index
       Model.logger.warn "user not found #{friend_id}"
-      return {:result => false } 
+      return {:result => false} 
     end
 
     friend = friends[index]
