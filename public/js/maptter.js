@@ -1,6 +1,6 @@
 Math.square = function(x){
     return x * x;
-}
+};
 
 if(!window.maptter) window.maptter = {
     route: function() {
@@ -52,21 +52,22 @@ if(!window.maptter) window.maptter = {
     getTimeline: function(){
 	var self = window.maptter;
 	var params = {count: 100};
+	if($(".ui-draggable-dragging").length > 0) return;
 	if(self.allTimeline.length != 0){
-	    params.since = self.allTimeline[0].created_at
+	    params.since = self.allTimeline[0].created_at;
 	    params.count = 40;
 	}
 	$.get("/twitter/timeline", params, function(timeline, status){
-	    var diffTimeline = []
+	    var diffTimeline = [];
 	    var timelineLength = self.allTimeline.length;
 	    self.updateActiveUsers(timeline);
 	    if(timelineLength == 0){
 		diffTimeline = timeline;
 	    }else{
-		var latestTweetID = parseInt(self.allTimeline[0].id_str);
+		var latestTweetID = parseInt(self.allTimeline[0].id_str, 10);
 		var pos = 0;
 		$.each(timeline, function(index, tweet){
-		    if(latestTweetID < parseInt(tweet.id_str)){
+		    if(latestTweetID < parseInt(tweet.id_str, 10)){
 			diffTimeline.push(tweet);
 		    }
 		});
@@ -85,7 +86,7 @@ if(!window.maptter) window.maptter = {
 	var self = this;
 	var users = {};
 	if(timeline == undefined){
-	    timeline == this.allTimeline;
+	    timeline = this.allTimeline;
 	}
 	$.each(timeline, function(index, tweet){
 	    users[tweet.user.id] = tweet.user;
@@ -105,7 +106,7 @@ if(!window.maptter) window.maptter = {
 		    })
 		    .css({
 			height: "48px",
-			width: "48px",
+			width: "48px"
 		    })
 	    );
 	});
@@ -113,7 +114,7 @@ if(!window.maptter) window.maptter = {
     updateNeighborsTimeline: function(timeline, merge){
 	var self = this;
 	if(merge == undefined){
-	    merge == false;
+	    merge = false;
 	}
 	var neighborsTimeline = [];
 	$.each(timeline, function(index, tweet){
@@ -143,13 +144,14 @@ if(!window.maptter) window.maptter = {
     moveTasks: {},
     saveMoveTasks: function(){
 	var self = window.maptter;
+	if($(".ui-draggable-dragging").length > 0) return;
 	for(var dummy in self.moveTasks){
 	    $.post("/map/move",
 		   {tasks: JSON.stringify($.map(self.moveTasks, function(value, key){return value;}))},
 		   function(data, status){
 		       self.moveTasks = {};
 		   });
-	    return
+	    return;
 	}
     },
     makeDraggableIcon: function(data){
