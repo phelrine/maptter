@@ -73,13 +73,19 @@ class User
 
   def friends_timeline(opt = {})
     Cache.get_or_set("friends-timeline-#{user_id}", 30){
-      Model.logger.info "FRIENDS_TIMELINE: #{user_id}"
-      rubytter(:friends_timeline, opt).map{|status| status.to_hash}
+      Model.logger.info "FRIENDS_TIMELINE: #{user_id} #{opt}"
+      rubytter(:friends_timeline, %w[since count].inject({}){|data, key|
+          data[key] = opt[key] if opt.has_key? key
+          data
+        }).map{|status| status.to_hash}
     }
   end
 
   def tweet(status, opt = {})
     Model.logger.info "TWEET:#{user_id} #{status}"
-    rubytter(:update, status, opt)
+    rubytter(:update, status, %w[in_reply_to_status_id].inject({}){|data, key|
+        data[key] = opt[key] if opt.has_key? key
+        data
+      })
   end
 end

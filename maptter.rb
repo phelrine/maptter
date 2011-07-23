@@ -91,7 +91,6 @@ class Maptter < Sinatra::Base
 
   post '/map/add' do
     halt 400 unless login?
-    
     params[:friend_id] =current_user.current_map.add_member(params)
     content_type :json 
     JSON.unparse params
@@ -99,28 +98,20 @@ class Maptter < Sinatra::Base
 
   post '/map/remove' do
     halt 400 unless login?
-
     content_type :json
     JSON.unparse current_user.current_map.remove_member(params[:friend_id])
   end
+  
   # Twitter API
   get '/twitter/timeline' do
     halt 400 unless login?
-    opt = {}
-    %w[since count].each{|e| 
-      opt[e] = params[e] if params.has_key? e 
-    }
     content_type :json
-    JSON.unparse current_user.friends_timeline(opt)
+    JSON.unparse current_user.friends_timeline(params)
   end
 
   post '/twitter/update' do
     halt 400 unless login?
-    opt = {}
-    %w[in_reply_to_status_id].each{|key|
-      opt[key] = params[key] if params.has_key? key
-    }
     content_type :json
-    JSON.unparse current_user.tweet(params[:tweet], opt)
+    JSON.unparse current_user.tweet(params[:tweet], params)
   end
 end
