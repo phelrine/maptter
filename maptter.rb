@@ -49,7 +49,11 @@ class Maptter < Sinatra::Base
     user.access_token = access_token.token
     user.access_secret = access_token.secret
 
-    user.create_default_map
+    if user.maps.size == 0
+      map = user.create_map
+      user.set_current_map_id(map.id)
+    end
+    
     session[:user_id] = user.user_id
     session.delete(:request_token)
     session.delete(:request_secret)

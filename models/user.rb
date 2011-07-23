@@ -9,6 +9,7 @@ class User
   key :user_id, String
   key :access_token, String
   key :access_secret, String
+  key :current_map_id, ObjectId
   many :maps
 
   attr_protected :access_token, :access_secret
@@ -21,16 +22,25 @@ class User
       )
   end
   
-  def create_default_map
-    return unless maps.size == 0
-    list = rubytter(:create_list, user_id ,"maptter-list")
+  def create_map(map_name = "maptter-list")
+    list = rubytter(:create_list, user_id, map_name)
+    Model.logger.warn "list name changed #{list[:slug]}" unless list[:slug] == map_name
     map = Map.new({:list_id => list[:id_str]})
     maps.push(map)
     save
     map.add_member({:user_id => user_id, :top => 0.5, :left => 0.5})
+    Model.logger.info "CREATE_MAP: #{list[:full_name]}(#{list[:id_str]})"
+    map
   end
-
-  def current_map ; maps.first end
+  
+  def set_current_map_id(map_id)
+    self.current_map_id = map_id
+    save
+  end
+  
+  def current_map 
+    @current_map ||= Map.find(current_map_id)
+  end
   
   def rubytter(api, *args)
     @rubytter ||= OAuthRubytter.new(
