@@ -19,30 +19,37 @@ router = function() {
     }
   }
 };
-if ((_ref = window.maptter) != null) {
-  _ref;
-} else {
+if ((_ref = window.maptter) == null) {
   window.maptter = {
-    friendIDs: [],
+    friends: [],
     moveTasks: {},
+    neighborIDs: [],
+    neighborLength: 200,
+    allTimeline: [],
+    neighborsTimeline: [],
     initFriendsMap: function() {
       setInterval((__bind(function() {
         return this.saveMoveTasks();
       }, this)), 10000);
-      return $.get("/map/friends", "", __bind(function(friends, status) {
+      setInterval((__bind(function() {
+        return this.getTimeline();
+      }, this)), 20000);
+      $.get("/map/friends", "", __bind(function(friends, status) {
         var friend, icon;
-        return this.friendIDs = (function() {
+        this.friends = (function() {
           var _i, _len, _results;
           _results = [];
           for (_i = 0, _len = friends.length; _i < _len; _i++) {
             friend = friends[_i];
             icon = this.makeDraggableIcon(friend);
             $(".map").append(icon);
-            _results.push(friend.user_id);
+            _results.push(icon);
           }
           return _results;
         }).call(this);
+        return this.updateNeighbors();
       }, this));
+      return this.getTimeline();
     },
     makeDraggableIcon: function(friend) {
       return $("<img>").addClass("icon").data({
@@ -61,11 +68,12 @@ if ((_ref = window.maptter) != null) {
         stop: __bind(function(event, ui) {
           var user_id;
           user_id = ui.helper.data("user_id");
-          return this.moveTasks[user_id] = {
+          this.moveTasks[user_id] = {
             friend_id: ui.helper.data("friend_id"),
             top: ui.position.top,
             left: ui.position.left
           };
+          return this.updateNeighbors();
         }, this)
       });
     },
@@ -89,16 +97,196 @@ if ((_ref = window.maptter) != null) {
       }, __bind(function() {
         return this.moveTasks = {};
       }, this));
+    },
+    updateNeighbors: function() {
+      var friend, length, squaredLeft, squaredTop, user, _i, _len, _ref2;
+      user = this.friends[0];
+      this.neighborIDs = [];
+      _ref2 = this.friends;
+      for (_i = 0, _len = _ref2.length; _i < _len; _i++) {
+        friend = _ref2[_i];
+        squaredTop = square(parseFloat(user.css("top")) - parseFloat(friend.css("top")));
+        squaredLeft = square(parseFloat(user.css("left")) - parseFloat(friend.css("left")));
+        length = Math.sqrt(squaredTop + squaredLeft);
+        if (length < this.neighborLength) {
+          this.neighborIDs.push(friend.data("user_id"));
+        }
+      }
+      return this.updateNeighborsTimeline(this.allTimeline);
+    },
+    updateNeighborsTimeline: function(timeline, merge) {
+      var diff, neighbor, neighborsTimeline, tweet, _i, _j, _k, _l, _len, _len2, _len3, _len4, _ref2, _results, _results2;
+      if (merge == null) {
+        merge = false;
+      }
+      neighborsTimeline = [];
+      for (_i = 0, _len = timeline.length; _i < _len; _i++) {
+        tweet = timeline[_i];
+        _ref2 = this.neighborIDs;
+        for (_j = 0, _len2 = _ref2.length; _j < _len2; _j++) {
+          neighbor = _ref2[_j];
+          if (neighbor === tweet.user.id_str) {
+            neighborsTimeline.push(tweet);
+          }
+        }
+      }
+      if (merge === true) {
+        diff = [];
+        $.merge(diff, neighborsTimeline);
+        this.neighborsTimeline = $.merge(neighborsTimeline, this.neighborsTimeline);
+        diff.reverse();
+        _results = [];
+        for (_k = 0, _len3 = diff.length; _k < _len3; _k++) {
+          tweet = diff[_k];
+          _results.push($(".timeline").prepend(this.makeTweet(tweet)));
+        }
+        return _results;
+      } else {
+        this.neighborsTimeline = neighborsTimeline;
+        $(".timeline").empty();
+        _results2 = [];
+        for (_l = 0, _len4 = neighborsTimeline.length; _l < _len4; _l++) {
+          tweet = neighborsTimeline[_l];
+          _results2.push($(".timeline").append(this.makeTweet(tweet)));
+        }
+        return _results2;
+      }
+    },
+    makeTweet: function(tweet) {
+      return $("<div>").append($("<img>").attr({
+        src: tweet.user.profile_image_url
+      }).css({
+        float: "left"
+      })).append($("<div>").text(tweet.user.screen_name + " " + tweet.user.name)).append($("<div>").text(tweet.text)).append($("<a>").attr({
+        href: "#"
+      }).text("reply").click((function() {
+        $("#tweet-post-form input[name=in_reply_to_status_id]").val(tweet.id_str);
+        return $("#tweet-post-form textarea[name=tweet]").val("@" + tweet.user.screen_name + " ");
+      }))).append($("<div>").css({
+        clear: "both"
+      }));
+    },
+    getTimeline: function() {
+      var diffTimeline, params;
+      if ($(".ui-draggable-dragging").length > 0) {
+        return;
+      }
+      params = {
+        count: 100
+      };
+      diffTimeline = [];
+      if (!(this.allTimeline.length === 0)) {
+        params.since = this.allTimeline[0].created_at;
+        params.count = 40;
+      }
+      $.get("twitter/timeline", params, __bind(function(timeline, status) {
+        var latestID, latestTimeline, tweet, _i, _len;
+        this.updateActiveUser(timeline);
+        if (this.allTimeline.length === 0) {
+          diffTimeline = timeline;
+        } else {
+          latestID = parseInt(this.allTimeline[0].id_str, 10);
+          for (_i = 0, _len = timeline.length; _i < _len; _i++) {
+            tweet = timeline[_i];
+            if (latestID < parseInt(tweet.id_str, 10)) {
+              diffTimeline.push(tweet);
+            }
+          }
+        }
+        if (diffTimeline.length > 0) {
+          $(".tmp").remove();
+        }
+        latestTimeline = [];
+        $.merge(latestTimeline, diffTimeline);
+        this.allTimeline = $.merge(latestTimeline, this.allTimeline);
+        return this.updateNeighborsTimeline(diffTimeline, true);
+      }, this));
+      return false;
+    },
+    updateActiveUser: function(timeline) {
+      var friend, id, tweet, user, users, _i, _j, _len, _len2, _ref2, _results;
+      if (timeline == null) {
+        timeline = this.allTimeline;
+      }
+      users = {};
+      for (_i = 0, _len = timeline.length; _i < _len; _i++) {
+        tweet = timeline[_i];
+        users[tweet.user.id_str] = tweet.user;
+      }
+      _ref2 = this.friends;
+      for (_j = 0, _len2 = _ref2.length; _j < _len2; _j++) {
+        friend = _ref2[_j];
+        delete users[friend.data("user_id")];
+      }
+      $(".friends").empty();
+      _results = [];
+      for (id in users) {
+        user = users[id];
+        _results.push($(".friends").append($("<img>").draggable({
+          revert: "invalid",
+          opacity: 0.5
+        }).data({
+          profile: user
+        }).attr({
+          src: user.profile_image_url,
+          alt: user.screen_name,
+          alt: user.screen_name
+        }).css({
+          height: "48px",
+          width: "48px"
+        })));
+      }
+      return _results;
     }
   };
-};
+}
 router({
   path: "/",
   func: function() {
     $(document).ready(function() {
       window.maptter.initFriendsMap();
+      $(".map").droppable({
+        accept: ":not(.icon)",
+        drop: function(event, ui) {
+          var friend, mapOffset;
+          ui.helper.draggable({
+            disabled: true
+          }).attr({
+            src: "img/loading.gif"
+          });
+          friend = ui.helper.data("profile");
+          mapOffset = $(".map").offset();
+          return $.post("/map/add", {
+            user_id: friend.id_str,
+            top: ui.offset.top - mapOffset.top,
+            left: ui.offset.left - mapOffset.left,
+            profile: friend
+          }, function(data, status) {
+            var icon;
+            $.extend(friend, data);
+            icon = window.maptter.makeDraggableIcon(friend).hide();
+            $(".map").append(icon);
+            ui.helper.remove();
+            icon.fadeIn('slow');
+            return window.maptter.updateNeighbors();
+          });
+        }
+      });
+      $(".slider").slider({
+        range: "min",
+        min: 100,
+        max: 600,
+        value: window.maptter.neighborLength,
+        slide: function(event, ui) {
+          return $("#slider-length-display").text("Length: " + ui.value);
+        },
+        stop: function(event, ui) {
+          window.maptter.neighborLength = ui.value;
+          return window.maptter.updateNeighbors();
+        }
+      });
       return $("#tweet-post-form").submit(function() {
-        $.post("/twitter/update", $("tweet-post-form").serialize(), function(tweet, status) {
+        $.post("/twitter/update", $("#tweet-post-form").serialize(), function(tweet, status) {
           $("#tweet-post-form textarea[name=tweet]").val("");
           return $(".timeline").prepend(maptter.makeTweet(tweet).addClass("tmp"));
         });
