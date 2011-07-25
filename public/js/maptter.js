@@ -9,13 +9,8 @@ router = function() {
   pathname = location.pathname;
   for (_i = 0, _len = args.length; _i < _len; _i++) {
     route = args[_i];
-    console.log(route);
     path = route.path;
     func = route.func;
-    if (!(path && func)) {
-      console.log(path);
-      console.log(func);
-    }
     if (!(path && func)) {
       return;
     }
@@ -31,7 +26,9 @@ if ((_ref = window.maptter) != null) {
     friendIDs: [],
     moveTasks: {},
     initFriendsMap: function() {
-      console.log(this);
+      setInterval((__bind(function() {
+        return this.saveMoveTasks();
+      }, this)), 10000);
       return $.get("/map/friends", "", __bind(function(friends, status) {
         var friend, icon;
         return this.friendIDs = (function() {
@@ -71,15 +68,38 @@ if ((_ref = window.maptter) != null) {
           };
         }, this)
       });
+    },
+    saveMoveTasks: function() {
+      var id, params, value;
+      if ($(".ui-draggable-dragging").length > 0 || $.isEmptyObject(this.moveTasks)) {
+        return;
+      }
+      params = JSON.stringify((function() {
+        var _ref2, _results;
+        _ref2 = this.moveTasks;
+        _results = [];
+        for (id in _ref2) {
+          value = _ref2[id];
+          _results.push(value);
+        }
+        return _results;
+      }).call(this));
+      $.post("/map/move", {
+        tasks: params
+      }, __bind(function() {
+        return this.moveTasks = {};
+      }, this));
     }
   };
 };
 router({
   path: "/",
   func: function() {
-    console.log("test");
-    return $(document).ready(function() {
+    $(document).ready(function() {
       return window.maptter.initFriendsMap();
+    });
+    return $(window).unload(function() {
+      return window.maptter.saveMoveTasks();
     });
   }
 });

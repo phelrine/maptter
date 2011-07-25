@@ -2,20 +2,17 @@ square = (x) -> x * x
 router = (args...) ->
   pathname = location.pathname
   for route in args
-    console.log route
     path = route.path
     func = route.func
-    unless path and func
-      console.log path
-      console.log func
     return unless path and func
     return func() if path == pathname or (path.test and path.test pathname)
 
 window.maptter ?=
   friendIDs: []
   moveTasks: {}
+
   initFriendsMap: ->
-    console.log this
+    setInterval (=> @saveMoveTasks()), 10000
     $.get "/map/friends", "", (friends, status) =>
       @friendIDs = for friend in friends
         icon = @makeDraggableIcon friend
@@ -44,10 +41,20 @@ window.maptter ?=
             left: ui.position.left
       )
 
+  saveMoveTasks: ->
+    return if $(".ui-draggable-dragging").length > 0 or $.isEmptyObject @moveTasks
+    params = JSON.stringify(for id, value of @moveTasks
+        value
+    )
+    $.post "/map/move", tasks: params, =>
+        @moveTasks = {}
+    return
+
 router({
   path: "/"
   func: ->
-    console.log "test"
     $(document).ready ->
       window.maptter.initFriendsMap()
+    $(window).unload ->
+      window.maptter.saveMoveTasks()
 })
