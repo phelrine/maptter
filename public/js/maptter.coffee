@@ -55,6 +55,12 @@ router({
   func: ->
     $(document).ready ->
       window.maptter.initFriendsMap()
+      $("#tweet-post-form").submit ->
+        $.post "/twitter/update", $("tweet-post-form").serialize(), (tweet, status) ->
+          $("#tweet-post-form textarea[name=tweet]").val ""
+          $(".timeline").prepend(maptter.makeTweet(tweet).addClass("tmp"))
+        return false
+
     $(window).unload ->
       window.maptter.saveMoveTasks()
 })

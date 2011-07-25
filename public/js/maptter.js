@@ -96,7 +96,14 @@ router({
   path: "/",
   func: function() {
     $(document).ready(function() {
-      return window.maptter.initFriendsMap();
+      window.maptter.initFriendsMap();
+      return $("#tweet-post-form").submit(function() {
+        $.post("/twitter/update", $("tweet-post-form").serialize(), function(tweet, status) {
+          $("#tweet-post-form textarea[name=tweet]").val("");
+          return $(".timeline").prepend(maptter.makeTweet(tweet).addClass("tmp"));
+        });
+        return false;
+      });
     });
     return $(window).unload(function() {
       return window.maptter.saveMoveTasks();
