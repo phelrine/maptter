@@ -265,6 +265,7 @@ router({
             var icon;
             $.extend(friend, data);
             icon = window.maptter.makeDraggableIcon(friend).hide();
+            window.maptter.friends.push(icon);
             $(".map").append(icon);
             ui.helper.remove();
             icon.fadeIn('slow');
