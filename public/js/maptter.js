@@ -44,7 +44,7 @@ if ((_ref = window.maptter) != null) {
           for (_i = 0, _len = friends.length; _i < _len; _i++) {
             friend = friends[_i];
             icon = this.makeDraggableIcon(friend);
-            $(".map").append(icon);
+            $("#map").append(icon);
             _results.push(icon);
           }
           return _results;
@@ -260,8 +260,8 @@ router({
         containment: "parent",
         stack: ".panel"
       });
-      $(".map").droppable({
-        accept: ":not(.icon)",
+      $("#map").droppable({
+        accept: ":not(.icon, .panel)",
         drop: function(event, ui) {
           var friend, mapOffset;
           ui.helper.draggable({
@@ -270,7 +270,7 @@ router({
             src: "img/loading.gif"
           });
           friend = ui.helper.data("profile");
-          mapOffset = $(".map").offset();
+          mapOffset = $("#map").offset();
           return $.post("/map/add", {
             user_id: friend.id_str,
             top: ui.offset.top - mapOffset.top,
@@ -281,7 +281,7 @@ router({
             $.extend(friend, data);
             icon = window.maptter.makeDraggableIcon(friend).hide();
             window.maptter.friends.push(icon);
-            $(".map").append(icon);
+            $("#map").append(icon);
             ui.helper.remove();
             icon.fadeIn('slow');
             return window.maptter.updateNeighbors();

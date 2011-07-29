@@ -22,7 +22,7 @@ window.maptter ?=
     $.get "/map/friends", "", (friends, status) =>
       @friends = for friend in friends
         icon = @makeDraggableIcon friend
-        $(".map").append icon
+        $("#map").append icon
         icon
       @updateNeighbors()
 
@@ -178,12 +178,12 @@ router({
         containment: "parent"
         stack: ".panel"
 
-      $(".map").droppable
-        accept: ":not(.icon)"
+      $("#map").droppable
+        accept: ":not(.icon, .panel)"
         drop: (event, ui) ->
           ui.helper.draggable(disabled: true).attr(src: "img/loading.gif")
           friend = ui.helper.data("profile")
-          mapOffset = $(".map").offset()
+          mapOffset = $("#map").offset()
           $.post "/map/add", {
               user_id: friend.id_str,
         			top: ui.offset.top - mapOffset.top,
@@ -193,7 +193,7 @@ router({
               $.extend(friend, data)
               icon = window.maptter.makeDraggableIcon(friend).hide()
               window.maptter.friends.push icon
-              $(".map").append icon
+              $("#map").append icon
               ui.helper.remove()
               icon.fadeIn 'slow'
               window.maptter.updateNeighbors()
