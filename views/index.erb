@@ -1,6 +1,44 @@
-maptter
-<% if login? %>
-<p><a href="/logout">logout</a></p>
+<div id="main">
+  <% if login? %>
+  <h2>Your map</h2>
+  <div id="mapContainer">
+    <input type="button" id="addFriendsBtn" value="Add Friends"></input>
+    <div id="friendsPanel">
+      <header>
+        <h3>Add friends</h3>
+      </header>
+      <ul id="friendsList"></ul>
+      <footer>
+        <ul>
+          <li>prev</li>
+          <li>next</li>
+        </ul>
+      </footer>
+    </div>
+    <div id="tlPanel">
+      <ul>
+        <li><a href="#mapTab">map</a></li>
+        <li><a href="#tlTab">TL</a></li>
+        <li><a href="#replyTab">@</a></li>
+      </ul>
+
+      <div id="mapTab">
+        <ul class="statusList">
+        </ul>
+      </div>
+      <div id="tlTab"></div>
+        <ul class="statusList">
+        </ul>
+      <div id="replyTab"></div>
+        <ul class="statusList">
+        </ul>
+    </div>
+  </div>
+  <% else %>
+  <a href="/oauth">login</a>
+  <% end %>
+</div>
+<!--<p><a href="/logout">logout</a></p>
 <form method="POST" id="tweet-post-form" action="/twitter/update">
   <input type="hidden" name="in_reply_to_status_id"/>
   <textarea name="tweet" rows="5" cols="80"></textarea>
@@ -12,7 +50,5 @@ maptter
 <div class="map" style="float: left;"></div>
 <div class="friends" style="float: left;"></div>
 <div style="clear: both"></div>
-<div class="timeline"></div>
-<% else %>
-<a href="/oauth">login</a>
-<% end %>
+<div class="timeline"></div>-->
+

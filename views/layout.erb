@@ -8,7 +8,25 @@
     <script type="text/javascript" src="js/maptter.js"></script>
   </head>
   <body>
-    <h1>Maptter</h1>
+    <div id="headerContainer">
+      <header>
+        <h1>Maptter</h1>
+        <ul>
+          <% if login? %>
+          <li>Tweet</li>
+          <li>ログアウト</li>
+          <% end %>
+        </ul>
+      </header>
+    </div>
     <%= yield %>
+    <div id="footerContainer">
+      <footer>
+        <h2>Footer</h2>
+        <h3>maptter</h3>
+        <h3>使い方</h3>
+        <div id="copy">&copy; maptter 2011.</div>
+      </footer>
+    <div id="footerContainer">
   </body>
 </html>
