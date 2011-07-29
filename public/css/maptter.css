@@ -52,7 +52,26 @@ div#mapContainer{
     border: 1px #fff solid;
     border-radius: 8px;
     margin: 1.5% auto;
-    padding: ;
+}
+
+div#mapContainer div#map{
+    height: 100%;
+    margin: 10px;
+    margin-bottom: 0px;
+}
+
+div#mapContainer div#map input#addFriendsBtn{
+    float: right;
+}
+
+div#mapContainer div#map input#addFriendsBtn{
+
+}
+
+div#mapContainer div#map div.panel{
+    background: transparent;
+    border: 0px ;
+    padding-bottom: 20px;
 }
 
 /* ------------------------------------- */
