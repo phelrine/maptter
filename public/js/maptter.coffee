@@ -145,9 +145,9 @@ window.maptter ?=
     for friend in @friends
       delete users[friend.data("user_id")]
 
-    $(".friends").empty()
+    $("#friendsList").empty()
     for id, user of users
-      $(".friends").append(
+      $("#friendsList").append(
         $("<img>").draggable(
           revert: "invalid"
           opacity: 0.5

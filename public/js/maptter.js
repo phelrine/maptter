@@ -225,11 +225,11 @@ if ((_ref = window.maptter) != null) {
         friend = _ref2[_j];
         delete users[friend.data("user_id")];
       }
-      $(".friends").empty();
+      $("#friendsList").empty();
       _results = [];
       for (id in users) {
         user = users[id];
-        _results.push($(".friends").append($("<img>").draggable({
+        _results.push($("#friendsList").append($("<img>").draggable({
           revert: "invalid",
           opacity: 0.5
         }).data({
