@@ -70,6 +70,9 @@ window.maptter ?=
       length = Math.sqrt(squaredTop + squaredLeft)
       if length < @neighborLength
         @neighborIDs.push friend.data "user_id"
+        friend.css "opacity", 1
+      else
+        friend.css "opacity", 0.5
 
     @updateNeighborsTimeline(@allTimeline)
 
