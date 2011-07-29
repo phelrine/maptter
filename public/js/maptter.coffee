@@ -97,13 +97,15 @@ window.maptter ?=
         $(".timeline").append(@makeTweet tweet)
 
   makeTweet: (tweet) ->
-    $("<div>").append($("<img>").attr(src: tweet.user.profile_image_url).css(float: "left"))
-      .append($("<div>").text(tweet.user.screen_name + " " + tweet.user.name))
-      .append($("<div>").text(tweet.text))
-      .append($("<a>").attr(href: "#").text("reply").click((->
+    $("<div>").addClass("status").append($("<img>").attr(src: tweet.user.profile_image_url).addClass("image"))
+      .append($("<div>").text(tweet.user.screen_name).addClass("screenname"))
+      .append($("<div>").text(tweet.user.name).addClass("name"))
+      .append($("<div>").text(tweet.text).addClass("text"))
+      .append($("<a>").attr(href: "#").text("reply").addClass("reply").click((->
       		$("#tweet-post-form input[name=in_reply_to_status_id]").val(tweet.id_str)
       		$("#tweet-post-form textarea[name=tweet]").val("@" + tweet.user.screen_name + " ");
       )))
+      .append($("<div>").text("RT").addClass("RT"))
       .append($("<div>").css(clear: "both"))
 
   getTimeline: ->
@@ -164,6 +166,14 @@ router({
   func: ->
     $(document).ready ->
       window.maptter.initFriendsMap()
+
+      $("#friendsPanel").draggable
+        containment: "parent"
+        stack: ".panel"
+
+      $("#tlPanel").tabs().draggable
+        containment: "parent"
+        stack: ".panel"
 
       $(".map").droppable
         accept: ":not(.icon)"
