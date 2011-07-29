@@ -60,19 +60,24 @@ div#mapContainer div#map{
     margin-bottom: 0px;
 }
 
+div#mapContainer div#map div.panel{
+    border: 0px;
+    background: transparent;
+    padding-bottom: 20px;
+}
+
 div#mapContainer div#map input#addFriendsBtn{
     float: right;
 }
-
-div#mapContainer div#map input#addFriendsBtn{
-
+div#mapContainer div#map div#friendsPanel{
+    width: 30%;
+}
+div#mapContainer div#map div#tlPanel{
+    width: 40%;
+    height: 50%;
+    overflow: auto;
 }
 
-div#mapContainer div#map div.panel{
-    background: transparent;
-    border: 0px ;
-    padding-bottom: 20px;
-}
 
 /* ------------------------------------- */
 /* footer                                */
