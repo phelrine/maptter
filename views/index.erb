@@ -2,36 +2,40 @@
   <% if login? %>
   <h2>Your map</h2>
   <div id="mapContainer">
-    <input type="button" id="addFriendsBtn" value="Add Friends"></input>
-    <div id="friendsPanel">
-      <header>
-        <h3>Add friends</h3>
-      </header>
-      <ul id="friendsList"></ul>
-      <footer>
-        <ul>
-          <li>prev</li>
-          <li>next</li>
-        </ul>
-      </footer>
-    </div>
-    <div id="tlPanel">
-      <ul>
-        <li><a href="#mapTab">map</a></li>
-        <li><a href="#tlTab">TL</a></li>
-        <li><a href="#replyTab">@</a></li>
-      </ul>
-
-      <div id="mapTab">
-        <ul class="statusList">
-        </ul>
+    <div id="map">
+      <input type="button" id="addFriendsBtn" value="Add Friends"></input>
+      <div id="friendsPanel" class="panel">
+        <header>
+          <h3>Add friends</h3>
+        </header>
+        <ul id="friendsList"></ul>
+        <footer>
+          <ul>
+            <li>prev</li>
+            <li>next</li>
+          </ul>
+        </footer>
       </div>
-      <div id="tlTab"></div>
-        <ul class="statusList">
+      <div id="tlPanel" class="panel">
+        <ul>
+          <li><a href="#mapTab">map</a></li>
+          <li><a href="#tlTab">TL</a></li>
+          <li><a href="#replyTab">@</a></li>
         </ul>
-      <div id="replyTab"></div>
-        <ul class="statusList">
-        </ul>
+
+        <div id="mapTab">
+          <ul class="statusList">
+          </ul>
+        </div>
+        <div id="tlTab">
+          <ul class="statusList">
+          </ul>
+        </div>
+        <div id="replyTab">
+          <ul class="statusList">
+          </ul>
+        </div>
+      </div>
     </div>
   </div>
   <% else %>
