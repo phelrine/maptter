@@ -143,16 +143,16 @@ if ((_ref = window.maptter) != null) {
         _results = [];
         for (_k = 0, _len3 = diff.length; _k < _len3; _k++) {
           tweet = diff[_k];
-          _results.push($(".timeline").prepend(this.makeTweet(tweet)));
+          _results.push($("div#mapTab .statusList").prepend(this.makeTweet(tweet)));
         }
         return _results;
       } else {
         this.neighborsTimeline = neighborsTimeline;
-        $(".timeline").empty();
+        $("div#mapTab .statusList").empty();
         _results2 = [];
         for (_l = 0, _len4 = neighborsTimeline.length; _l < _len4; _l++) {
           tweet = neighborsTimeline[_l];
-          _results2.push($(".timeline").append(this.makeTweet(tweet)));
+          _results2.push($("div#mapTab .statusList").append(this.makeTweet(tweet)));
         }
         return _results2;
       }
@@ -183,7 +183,7 @@ if ((_ref = window.maptter) != null) {
         params.count = 40;
       }
       $.get("twitter/timeline", params, __bind(function(timeline, status) {
-        var latestID, latestTimeline, tweet, _i, _len;
+        var latestID, latestTimeline, tweet, _i, _j, _len, _len2;
         this.updateActiveUser(timeline);
         if (this.allTimeline.length === 0) {
           diffTimeline = timeline;
@@ -202,6 +202,10 @@ if ((_ref = window.maptter) != null) {
         latestTimeline = [];
         $.merge(latestTimeline, diffTimeline);
         this.allTimeline = $.merge(latestTimeline, this.allTimeline);
+        for (_j = 0, _len2 = diffTimeline.length; _j < _len2; _j++) {
+          tweet = diffTimeline[_j];
+          $("div#tlTab .statusList").append(this.makeTweet(tweet));
+        }
         return this.updateNeighborsTimeline(diffTimeline, true);
       }, this));
       return false;

@@ -89,12 +89,12 @@ window.maptter ?=
       @neighborsTimeline = $.merge neighborsTimeline, @neighborsTimeline
       diff.reverse()
       for tweet in diff
-        $(".timeline").prepend(@makeTweet tweet)
+        $("div#mapTab .statusList").prepend(@makeTweet tweet)
     else
       @neighborsTimeline = neighborsTimeline
-      $(".timeline").empty()
+      $("div#mapTab .statusList").empty()
       for tweet in neighborsTimeline
-        $(".timeline").append(@makeTweet tweet)
+        $("div#mapTab .statusList").append(@makeTweet tweet)
 
   makeTweet: (tweet) ->
     $("<div>").addClass("status").append($("<img>").attr(src: tweet.user.profile_image_url).addClass("image"))
@@ -130,6 +130,9 @@ window.maptter ?=
       latestTimeline = []
       $.merge latestTimeline, diffTimeline
       @allTimeline = $.merge latestTimeline, @allTimeline
+      for tweet in diffTimeline
+        $("div#tlTab .statusList").append(@makeTweet tweet)
+
       @updateNeighborsTimeline diffTimeline, true
     false
 
