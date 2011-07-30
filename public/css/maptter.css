@@ -97,8 +97,8 @@ div#mapContainer div#map input#addFriendsBtn:hover{
 }
 
 div#mapContainer div#map div#friendsPanel div#friendsScrollContainer{
-    max-width: 250px;
-    max-height: 250px;
+    max-width: 270px;
+    max-height: 270px;
     overflow: auto;
 }
 
@@ -165,6 +165,7 @@ div#footerContainer footer div#copy{
 .icon {
     display: block;
 /*    margin: -24px 0px 0px -24px;*/
+    margin-bottom: 20px;
     position: absolute;
     border: 1px solid;
     width: 48px;
