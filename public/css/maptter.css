@@ -76,6 +76,7 @@ div#mapContainer div#map div.panel{
     border: 0px;
     background: rgba(0, 0, 0, 0.7);
     border-radius: 3px;
+    margin-bottom: 20px;
 }
 
 div#mapContainer div#map div#friendsPanel{
@@ -96,8 +97,8 @@ div#mapContainer div#map input#addFriendsBtn:hover{
 }
 
 div#mapContainer div#map div#friendsPanel div#friendsScrollContainer{
-    max-width: 270px;
-    max-height: 270px;
+    max-width: 250px;
+    max-height: 250px;
     overflow: auto;
 }
 
