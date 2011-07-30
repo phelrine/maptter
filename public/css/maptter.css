@@ -41,6 +41,8 @@ div#headerContainer header ul li{
     display: inline;
 }
 
+
+
 /* ------------------------------------- */
 /* mapContainer                          */
 /* ------------------------------------- */
@@ -57,27 +59,42 @@ div#mapContainer{
 div#mapContainer div#map{
     height: 100%;
     margin: 10px;
-    margin-bottom: 0px;
-}
-
-div#mapContainer div#map div.panel{
-    border: 0px;
-    background: transparent;
-    padding-bottom: 20px;
+    position: relative;
 }
 
 div#mapContainer div#map input#addFriendsBtn{
     float: right;
+    border: 1px #369 solid;
+    color: #fff;
+    background: rgba(0, 0, 0, 0.7);
+    font-size: 14px;
+    padding: 5px;
+}
+div#mapContainer div#map div.panel{
+    border: 0px;
+    background: transparent;
+    
 }
 div#mapContainer div#map div#friendsPanel{
-    width: 30%;
+    width: 300px;
+    box-shadow: 0px 3px 5px #000;
+    background: rgba(0,0,0,0.7);
+    border-radius: 3px;
+}
+
+div#mapContainer div#map div#friendsPanel h3{
+    color: #fff;
+    padding: 5px 0px 2px 1px;
+}
+
+div#mapContainer div#map div#friendsPanel img{
+    margin: 1px;
 }
 div#mapContainer div#map div#tlPanel{
     width: 40%;
     height: 50%;
     overflow: auto;
 }
-
 
 /* ------------------------------------- */
 /* footer                                */
@@ -123,12 +140,12 @@ div#footerContainer footer div#copy{
 
 .icon {
     display: block;
-    margin: -24px 0px 0px -24px;
+/*    margin: -24px 0px 0px -24px;*/
     position: absolute;
     border: 1px solid;
     width: 48px;
     height: 48px;
-    box-shadow: 2px 0px 5px 0px #666;
+    box-shadow: 0px 2px 5px 0px #333;
 }
 
 .slider {
