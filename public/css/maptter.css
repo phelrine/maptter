@@ -20,13 +20,15 @@ h2{
 div#headerContainer{
     color: #fff;
     background-color: #000;
+    background-image: url("./images/header_bg.png");
     box-shadow: 2px 0px 5px 0px #333;
 }
 
 div#headerContainer header{
     width: 90%;
     margin: 0px auto;
-    padding: 3px 0px;
+    font-size: 16px;
+    padding: 5px 0px;
 }
 
 div#headerContainer header h1{
@@ -40,6 +42,13 @@ div#headerContainer header ul{
 
 div#headerContainer header ul li{
     display: inline;
+    padding: 0px 10px;
+    border-right: 1px #555 solid;
+}
+
+div#headerContainer header ul li:last-child{
+    padding-right: 0px;
+    border-right: 0px;
 }
 
 
@@ -74,6 +83,7 @@ div#mapContainer div#map input#addFriendsBtn{
 div#mapContainer div#map input#addFriendsBtn:hover{
     background: rgba(102, 102, 102, 0.7);
 }
+
 
 div#mapContainer div#map div.panel{
     border: 0px;
