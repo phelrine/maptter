@@ -171,12 +171,18 @@ router({
       window.maptter.initFriendsMap()
 
       $("#friendsScrollContainer").hide()
-      $("#addFriendsBtn").click ->
-        $("#friendsScrollContainer").toggle("slow")
+      $("#tlTabs").hide()
 
-      $("#tlPanel").tabs().draggable
+      $("#addFriendButton").click ->
+        $("div#friendsScrollContainer").toggle("slow")
+
+      $("#tlPanel").draggable
         containment: "parent"
         stack: ".panel"
+
+      $("#tlToggleButton").click ->
+        $("#tlTabs").toggle("slow")
+      $("#tlTabs").tabs()
 
       $("#map").droppable
         accept: ":not(.icon, .panel)"

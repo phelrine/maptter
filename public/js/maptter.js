@@ -254,13 +254,18 @@ router({
     $(document).ready(function() {
       window.maptter.initFriendsMap();
       $("#friendsScrollContainer").hide();
-      $("#addFriendsBtn").click(function() {
-        return $("#friendsScrollContainer").toggle("slow");
+      $("#tlTabs").hide();
+      $("#addFriendButton").click(function() {
+        return $("div#friendsScrollContainer").toggle("slow");
       });
-      $("#tlPanel").tabs().draggable({
+      $("#tlPanel").draggable({
         containment: "parent",
         stack: ".panel"
       });
+      $("#tlToggleButton").click(function() {
+        return $("#tlTabs").toggle("slow");
+      });
+      $("#tlTabs").tabs();
       $("#map").droppable({
         accept: ":not(.icon, .panel)",
         drop: function(event, ui) {
