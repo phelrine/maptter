@@ -19,9 +19,7 @@ router = function() {
     }
   }
 };
-if ((_ref = window.maptter) != null) {
-  _ref;
-} else {
+if ((_ref = window.maptter) == null) {
   window.maptter = {
     friends: [],
     moveTasks: {},
@@ -246,15 +244,19 @@ if ((_ref = window.maptter) != null) {
       return _results;
     }
   };
-};
+}
 router({
   path: "/",
   func: function() {
     $(document).ready(function() {
       window.maptter.initFriendsMap();
-      $("#friendsPanel").draggable({
+      $("#addFriendsBtn").click(function() {
+        return $("#friendsPanel").show('slow');
+      });
+      $("#friendsPanel").hide().draggable({
         containment: "parent",
-        stack: ".panel"
+        stack: ".panel",
+        handle: "header"
       });
       $("#tlPanel").tabs().draggable({
         containment: "parent",
