@@ -87,15 +87,15 @@ div#mapContainer div#map input#addFriendsBtn:hover{
 
 div#mapContainer div#map div.panel{
     border: 0px;
-    background: transparent;
-    
+    background: rgba(0, 0, 0, 0.7);
+    border-radius: 3px;
+    position: absolute;
 }
+
 div#mapContainer div#map div#friendsPanel{
     width: 300px;
     box-shadow: 0px 3px 5px #000;
-    background: rgba(0,0,0,0.7);
     opacity: 0.4;
-    border-radius: 3px;
 }
 
 div#mapContainer div#map div#friendsPanel h3{
@@ -117,6 +117,10 @@ div#mapContainer div#map div#tlPanel{
     width: 40%;
     height: 50%;
     overflow: auto;
+}
+
+div.status{
+    color: white;
 }
 
 /* ------------------------------------- */
