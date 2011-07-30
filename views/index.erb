@@ -3,18 +3,13 @@
   <h2>Your map</h2>
   <div id="mapContainer">
     <div id="map">
-      <input type="button" id="addFriendsBtn" value="Add Friends"></input>
       <div id="friendsPanel" class="panel">
         <header>
-          <h3>Add friends</h3>
+	  <input type="button" id="addFriendsBtn" value="Add Friends" />
         </header>
-        <ul id="friendsList"></ul>
-        <footer>
-          <ul>
-            <li>prev</li>
-            <li>next</li>
-          </ul>
-        </footer>
+	<div id="friendsScrollContainer">
+          <ul id="friendsList"></ul>
+	</div>
       </div>
       <div id="tlPanel" class="panel">
         <ul>

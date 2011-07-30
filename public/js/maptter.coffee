@@ -170,13 +170,9 @@ router({
     $(document).ready ->
       window.maptter.initFriendsMap()
 
+      $("#friendsScrollContainer").hide()
       $("#addFriendsBtn").click ->
-        $("#friendsPanel").show('slow')
-
-      $("#friendsPanel").hide().draggable
-        containment: "parent"
-        stack: ".panel"
-        handle: "header"
+        $("#friendsScrollContainer").toggle("slow")
 
       $("#tlPanel").tabs().draggable
         containment: "parent"

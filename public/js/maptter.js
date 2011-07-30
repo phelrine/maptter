@@ -250,13 +250,9 @@ router({
   func: function() {
     $(document).ready(function() {
       window.maptter.initFriendsMap();
+      $("#friendsScrollContainer").hide();
       $("#addFriendsBtn").click(function() {
-        return $("#friendsPanel").show('slow');
-      });
-      $("#friendsPanel").hide().draggable({
-        containment: "parent",
-        stack: ".panel",
-        handle: "header"
+        return $("#friendsScrollContainer").toggle("slow");
       });
       $("#tlPanel").tabs().draggable({
         containment: "parent",
