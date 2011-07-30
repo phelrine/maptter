@@ -170,7 +170,7 @@ router({
     $(document).ready ->
       window.maptter.initFriendsMap()
 
-      $("#friendsScrollContainer").hide()
+      $("div#friendsScrollContainer").hide()
       $("#tlTabs").hide()
 
       $("#addFriendButton").click ->
@@ -181,7 +181,10 @@ router({
         stack: ".panel"
 
       $("#tlToggleButton").click ->
-        $("#tlTabs").toggle("slow")
+        $("#tlTabs").toggle "slow", ->
+          if $(this).css("display") == "block"
+            $(this).css("display", "table")
+
       $("#tlTabs").tabs()
 
       $("#map").droppable

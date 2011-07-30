@@ -253,7 +253,7 @@ router({
   func: function() {
     $(document).ready(function() {
       window.maptter.initFriendsMap();
-      $("#friendsScrollContainer").hide();
+      $("div#friendsScrollContainer").hide();
       $("#tlTabs").hide();
       $("#addFriendButton").click(function() {
         return $("div#friendsScrollContainer").toggle("slow");
@@ -263,7 +263,11 @@ router({
         stack: ".panel"
       });
       $("#tlToggleButton").click(function() {
-        return $("#tlTabs").toggle("slow");
+        return $("#tlTabs").toggle("slow", function() {
+          if ($(this).css("display") === "block") {
+            return $(this).css("display", "table");
+          }
+        });
       });
       $("#tlTabs").tabs();
       $("#map").droppable({

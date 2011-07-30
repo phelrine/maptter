@@ -113,7 +113,11 @@ div#mapContainer div#map div#tlPanel{
     max-width: 350px;
 }
 
-div#mapContainer div#map div#tlPanel div#tlTabs {
+div#mapContainer div#map div#tlTabs{
+    display: table;
+}
+
+div#mapContainer div#map div#tlPanel .tab{
     max-height: 350px;
     overflow: auto;
 }
