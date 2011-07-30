@@ -181,7 +181,7 @@ if ((_ref = window.maptter) == null) {
         params.count = 40;
       }
       $.get("twitter/timeline", params, __bind(function(timeline, status) {
-        var latestID, latestTimeline, tweet, _i, _j, _len, _len2;
+        var latestID, latestTimeline, tweet, _i, _j, _len, _len2, _results;
         this.updateActiveUser(timeline);
         if (this.allTimeline.length === 0) {
           diffTimeline = timeline;
@@ -200,11 +200,14 @@ if ((_ref = window.maptter) == null) {
         latestTimeline = [];
         $.merge(latestTimeline, diffTimeline);
         this.allTimeline = $.merge(latestTimeline, this.allTimeline);
+        this.updateNeighborsTimeline(diffTimeline, true);
+        diffTimeline.reverse();
+        _results = [];
         for (_j = 0, _len2 = diffTimeline.length; _j < _len2; _j++) {
           tweet = diffTimeline[_j];
-          $("div#tlTab .statusList").append(this.makeTweet(tweet));
+          _results.push($("div#tlTab .statusList").prepend(this.makeTweet(tweet)));
         }
-        return this.updateNeighborsTimeline(diffTimeline, true);
+        return _results;
       }, this));
       return false;
     },

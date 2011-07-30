@@ -130,10 +130,10 @@ window.maptter ?=
       latestTimeline = []
       $.merge latestTimeline, diffTimeline
       @allTimeline = $.merge latestTimeline, @allTimeline
-      for tweet in diffTimeline
-        $("div#tlTab .statusList").append(@makeTweet tweet)
-
       @updateNeighborsTimeline diffTimeline, true
+      diffTimeline.reverse()
+      for tweet in diffTimeline
+        $("div#tlTab .statusList").prepend(@makeTweet tweet)
     false
 
   updateActiveUser: (timeline = @allTimeline)->
