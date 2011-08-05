@@ -164,7 +164,7 @@ if ((_ref = window.maptter) != null) {
         href: "#"
       }).text("reply").addClass("reply").click((function() {
         return $("#tweet-post-form input[name=in_reply_to_status_id]").val(tweet.id_str);
-      }, $("#tweet-post-form textarea[name=tweet]").val("@" + tweet.user.screen_name + " ")))).append(this.makeFavoriteElement(tweet)).append($("<div>").text("RT").addClass("RT")).append($("<div>").css({
+      }, $("#tweet-post-form textarea[name=tweet]").val("@" + tweet.user.screen_name + " ")))).append(this.makeFavoriteElement(tweet)).append($("<div>").css({
         clear: "both"
       }));
     },
@@ -230,7 +230,7 @@ if ((_ref = window.maptter) != null) {
         _results = [];
         for (_j = 0, _len2 = diffTimeline.length; _j < _len2; _j++) {
           tweet = diffTimeline[_j];
-          _results.push($("div#tlTab .statusList").prepend(this.makeTweet(tweet)));
+          _results.push($("div#timelineTab .statusList").prepend(this.makeTweet(tweet)));
         }
         return _results;
       }, this));
@@ -279,22 +279,11 @@ router({
     $(document).ready(function() {
       window.maptter.initFriendsMap();
       $("div#friendsScrollContainer").hide();
-      $("#tlTabs").hide();
       $("#addFriendButton").click(function() {
+        console.log("test");
         return $("div#friendsScrollContainer").toggle("slow");
       });
-      $("#tlPanel").draggable({
-        containment: "parent",
-        stack: ".panel"
-      });
-      $("#tlToggleButton").click(function() {
-        return $("#tlTabs").toggle("slow", function() {
-          if ($(this).css("display") === "block") {
-            return $(this).css("display", "table");
-          }
-        });
-      });
-      $("#tlTabs").tabs();
+      $("#timelineTabs").tabs();
       $("#map").droppable({
         accept: ":not(.icon, .panel)",
         drop: function(event, ui) {

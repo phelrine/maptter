@@ -95,12 +95,12 @@ class User
   end
 
   def create_favorite(tweet_id)
-    Model.logger.info "FAVORITE CREATE:#{user_id} #{tweet_id}"
+    Model.logger.info "FAVORITE_CREATE:#{user_id} #{tweet_id}"
     rubytter(:favorite, tweet_id)
   end
 
   def remove_favorite(tweet_id)
-    Model.logger.info "FAVORITE REMOVE:#{user_id} #{tweet_id}"
+    Model.logger.info "FAVORITE_REMOVE:#{user_id} #{tweet_id}"
     rubytter(:remove_favorite, tweet_id)
   end
 end

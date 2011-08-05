@@ -2,36 +2,40 @@
   <% if login? %>
   <h2>Your map</h2>
   <div id="mapContainer">
-    <div id="map">
-      <div id="friendsPanel" class="panel">
-        <header>
-	  <input type="button" id="addFriendButton" class="toggleButton" value="Add Friends" />
-        </header>
-	<div id="friendsScrollContainer">
-          <ul id="friendsList"></ul>
-	</div>
+    <div id="friendsPane">
+      <header>
+	<input type="button" id="addFriendButton" class="toggleButton" value="Add Friends" />
+      </header>
+      <div id="friendsScrollContainer">
+        <ul id="friendsList"></ul>
       </div>
-      <div id="tlPanel" class="panel">
-	<header>
-	  <input type="button" id="tlToggleButton" class="toggleButton" value="Timeline" />
-	</header>
-	<div id="tlTabs">
-          <ul>
-            <li><a href="#mapTab">map</a></li>
-            <li><a href="#tlTab">TL</a></li>
-            <li><a href="#replyTab">@</a></li>
-          </ul>
-          <div id="mapTab" class="tab">
-            <ul class="statusList"></ul>
-          </div>
-          <div id="tlTab" class="tab">
-            <ul class="statusList"></ul>
-          </div>
-          <div id="replyTab" class="tab">
-            <ul class="statusList"></ul>
-          </div>
-	</div>
+    </div>
+    <div id="timelinePane" class="pane">
+      <form id="tweetPostForm">
+	<label>
+	  <p>what are you doing?</p>
+	  <input id="tweetTextArea" type="textarea" name="tweet" value=""/>
+	</label>
+	<input id="tweetSubmitButton" type="button" value="tweet"/>
+      </form>
+      <div id="timelineTabs">
+        <ul>
+          <li><a href="#mapTab">map</a></li>
+          <li><a href="#timelineTab">TL</a></li>
+          <li><a href="#replyTab">@</a></li>
+        </ul>
+        <div id="mapTab" class="tab">
+          <ul class="statusList"></ul>
+        </div>
+        <div id="timelineTab" class="tab">
+          <ul class="statusList"></ul>
+        </div>
+        <div id="replyTab" class="tab">
+          <ul class="statusList"></ul>
+        </div>
       </div>
+    </div>
+    <div id="map" class="pane">
     </div>
   </div>
   <% else %>

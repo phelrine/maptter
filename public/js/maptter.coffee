@@ -106,7 +106,6 @@ window.maptter ?=
       		$("#tweet-post-form textarea[name=tweet]").val("@" + tweet.user.screen_name + " ");
       )))
       .append(@makeFavoriteElement(tweet))
-      .append($("<div>").text("RT").addClass("RT"))
       .append($("<div>").css(clear: "both"))
 
   makeFavoriteElement: (tweet) ->
@@ -148,7 +147,7 @@ window.maptter ?=
       @updateNeighborsTimeline diffTimeline, true
       diffTimeline.reverse()
       for tweet in diffTimeline
-        $("div#tlTab .statusList").prepend(@makeTweet tweet)
+        $("div#timelineTab .statusList").prepend(@makeTweet tweet)
     false
 
   updateActiveUser: (timeline = @allTimeline)->
@@ -186,21 +185,11 @@ router({
       window.maptter.initFriendsMap()
 
       $("div#friendsScrollContainer").hide()
-      $("#tlTabs").hide()
-
       $("#addFriendButton").click ->
+        console.log "test"
         $("div#friendsScrollContainer").toggle("slow")
 
-      $("#tlPanel").draggable
-        containment: "parent"
-        stack: ".panel"
-
-      $("#tlToggleButton").click ->
-        $("#tlTabs").toggle "slow", ->
-          if $(this).css("display") == "block"
-            $(this).css("display", "table")
-
-      $("#tlTabs").tabs()
+      $("#timelineTabs").tabs()
 
       $("#map").droppable
         accept: ":not(.icon, .panel)"
