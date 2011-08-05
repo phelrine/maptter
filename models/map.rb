@@ -10,15 +10,15 @@ class Map
     @owner ||= User.find(user_id)
   end
 
-  def list_api(api, *args)
+  def list_api(api, opt)
     begin
-      owner.rubytter(api, owner.user_id, list_id, args)
+      owner.rubytter(api, owner.user_id, list_id, opt)
     rescue Rubytter::APIError => error
       if error.message == "Not found"
         list = owner.create_list
         self.list_id = list[:id_str]
         save
-        owner.rubytter(api, owner.user_id, list_id, args)
+        owner.rubytter(api, owner.user_id, list_id, opt)
       else
         raise error
       end
@@ -30,7 +30,7 @@ class Map
       profiles = {}
       has_next = -1
       while has_next != 0
-        Model.logger.info "GET LIST_MEMBERS: #{id}"
+        Model.logger.info "LIST_NEXT_CURSOR: #{id} #{has_next}"
         list_members = list_api(:list_members, {:cursor => has_next})
         has_next = list_members[:next_cursor]
         list_members[:users].to_a.each{|profile|
