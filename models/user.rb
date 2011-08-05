@@ -23,14 +23,19 @@ class User
   end
   
   def create_map(map_name = "maptter-list")
-    list = rubytter(:create_list, user_id, map_name)
-    Model.logger.warn "list name changed #{list[:slug]}" unless list[:slug] == map_name
+    list = create_list
     map = Map.new({:list_id => list[:id_str]})
     maps.push(map)
     save
     map.add_member({:user_id => user_id, :top => 0.5, :left => 0.5})
     Model.logger.info "CREATE_MAP: #{list[:full_name]}(#{list[:id_str]})"
     map
+  end
+
+  def create_list(list_name = "maptter-list")
+    list = rubytter(:create_list, user_id, list_name)
+    Model.logger.warn "list name changed #{list[:slug]}" unless list[:slug] == list_name
+    list
   end
   
   def set_current_map_id(map_id)
@@ -53,10 +58,10 @@ class User
     begin
       @rubytter.method(api).call(*args)
     rescue Rubytter::APIError => error
+      Model.logger.warn "api error: #{error.message}"
       if error.message == "Could not authenticate with OAuth."
         raise OAuthRevoked.new(error.message)
       else
-        Model.logger.warn "api error: #{error.message}"
         raise error
       end
     end
