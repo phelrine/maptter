@@ -109,7 +109,7 @@ div#timelineTabs{
 }
 
 div#timelinePane .tab{
-    max-height: 400px;
+    max-height: 450px;
     padding: 5px;
     overflow: auto;
 }
@@ -117,33 +117,6 @@ div#timelinePane .tab{
 div#mapContainer{
     width: 700px;
     float: left;
-}
-
-div#map{
-    background: rgba(255, 255, 255, 0.7);
-    height: 95%;
-    margin: 10px 0px;
-    position: relative;
-}
-
-div#mapContainer div#map div.panel{
-    border: 0px;
-    background: rgba(0, 0, 0, 0.7);
-    border-radius: 3px;
-    margin-bottom: 20px;
-}
-
-input.toggleButton{
-    border: 0px;
-    color: #fff;
-    background: rgba(0, 0, 0, 0.7);
-    font-size: 14px;
-    padding: 5px 0px 2px 1px;
-    border-radius: 3px;
-}
-
-input.toggleButton:hover{
-    background: rgba(102, 102, 102, 0.7);
 }
 
 div#friendsPane{
@@ -157,7 +130,45 @@ div#friendsPane:hover{
 }
 
 div#friendsPane img{
+    width: 48px;
+    heigh: 48px;
     margin: 1px;
+}
+
+div#friendsPane img:hover{
+    border: red 1px solid;
+    margin: 0px;
+}
+
+input.toggleButton{
+    border: 0px;
+    color: #fff;
+    background: rgba(0, 0, 0, 0.7);
+    font-size: 14px;
+    padding: 5px 0px 2px 1px;
+    border-radius: 8px;
+    width: 100%;
+}
+
+input.toggleButton:hover{
+    background: rgba(128, 128, 128, 0.7);
+}
+
+div#map{
+    background: rgba(255, 255, 255, 0.7);
+    height: 95%;
+    margin: 10px 0px;
+    position: relative;
+    text-align: center;
+}
+
+div#map strong{
+    font-size: 2em;
+    display: none;
+}
+
+div#map.addFriend{
+    background: rgba(255, 255, 255, 0.9);
 }
 
 div.status{

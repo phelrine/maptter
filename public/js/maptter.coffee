@@ -170,7 +170,14 @@ window.maptter ?=
         .attr(
           src: user.profile_image_url
           alt: user.screen_name
-          alt: user.screen_name
+          title: user.screen_name
+        )
+        .hover((->
+            $("#map").addClass("addFriend")
+            $("#map strong").show()
+           ),(->
+            $("#map strong").hide()
+            $("#map").removeClass "addFriend")
         )
         .css(
           height: "48px"
@@ -186,13 +193,12 @@ router({
 
       $("div#friendsScrollContainer").hide()
       $("#addFriendButton").click ->
-        console.log "test"
         $("div#friendsScrollContainer").slideToggle("slow")
 
       $("#timelineTabs").tabs()
 
       $("#map").droppable
-        accept: ":not(.icon, .panel)"
+        accept: ":not(.icon)"
         drop: (event, ui) ->
           ui.helper.draggable(disabled: true).attr(src: "img/loading.gif")
           friend = ui.helper.data("profile")

@@ -261,8 +261,14 @@ if ((_ref = window.maptter) == null) {
         }).attr({
           src: user.profile_image_url,
           alt: user.screen_name,
-          alt: user.screen_name
-        }).css({
+          title: user.screen_name
+        }).hover((function() {
+          $("#map").addClass("addFriend");
+          return $("#map strong").show();
+        }), (function() {
+          $("#map strong").hide();
+          return $("#map").removeClass("addFriend");
+        })).css({
           height: "48px",
           width: "48px"
         })));
@@ -278,12 +284,11 @@ router({
       window.maptter.initFriendsMap();
       $("div#friendsScrollContainer").hide();
       $("#addFriendButton").click(function() {
-        console.log("test");
         return $("div#friendsScrollContainer").slideToggle("slow");
       });
       $("#timelineTabs").tabs();
       $("#map").droppable({
-        accept: ":not(.icon, .panel)",
+        accept: ":not(.icon)",
         drop: function(event, ui) {
           var friend, mapOffset;
           ui.helper.draggable({
