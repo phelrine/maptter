@@ -30,6 +30,7 @@ class Map
       profiles = {}
       has_next = -1
       while has_next != 0
+        Model.logger.info "GET LIST_MEMBERS: #{id}"
         list_members = list_api(:list_members, {:cursor => has_next})
         has_next = list_members[:next_cursor]
         list_members[:users].to_a.each{|profile|
@@ -42,11 +43,12 @@ class Map
   end
   
   def get_members
-    friends.map{|friend|
+    reset_cache = false
+    members = friends.map{|friend|
       member_profiles.fetch(friend.user_id){
         Model.logger.warn "profile not found: #{friend.user_id}"
+        reset_cache = true
         list_api(:add_member_to_list, friend.user_id)
-        Cache.delete("list-#{id}")
         profile = owner.profile(friend.user_id)
       }.merge({
           :user_id => friend.user_id,
@@ -55,6 +57,8 @@ class Map
           :left => friend.left,
         })
     }
+    Cache.delete("list-#{id}") if reset_cache 
+    members
   end
 
   def find_member(friend_id)
