@@ -3,6 +3,7 @@
     height: 480px;
     width: 640px;
     border: 1px solid;
+    padding: 24px 0px 0px 24px;
 }
 
 .friends {
@@ -13,12 +14,16 @@
 }
 
 .icon {
+    display: block;
+    margin: -24px 0px 0px -24px;
     position: absolute;
     border: 1px solid;
     width: 48px;
     height: 48px;
+    box-shadow: 2px 0px 5px 0px #666;
 }
 
 .slider {
     width: 640px;
 }
+
