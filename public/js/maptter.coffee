@@ -187,7 +187,7 @@ router({
       $("div#friendsScrollContainer").hide()
       $("#addFriendButton").click ->
         console.log "test"
-        $("div#friendsScrollContainer").toggle("slow")
+        $("div#friendsScrollContainer").slideToggle("slow")
 
       $("#timelineTabs").tabs()
 

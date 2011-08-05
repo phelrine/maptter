@@ -279,7 +279,7 @@ router({
       $("div#friendsScrollContainer").hide();
       $("#addFriendButton").click(function() {
         console.log("test");
-        return $("div#friendsScrollContainer").toggle("slow");
+        return $("div#friendsScrollContainer").slideToggle("slow");
       });
       $("#timelineTabs").tabs();
       $("#map").droppable({
