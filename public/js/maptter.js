@@ -19,7 +19,9 @@ router = function() {
     }
   }
 };
-if ((_ref = window.maptter) == null) {
+if ((_ref = window.maptter) != null) {
+  _ref;
+} else {
   window.maptter = {
     friends: [],
     moveTasks: {},
@@ -161,11 +163,34 @@ if ((_ref = window.maptter) == null) {
       }).addClass("image")).append($("<div>").text(tweet.user.screen_name).addClass("screenname")).append($("<div>").text(tweet.user.name).addClass("name")).append($("<div>").text(tweet.text).addClass("text")).append($("<a>").attr({
         href: "#"
       }).text("reply").addClass("reply").click((function() {
-        $("#tweet-post-form input[name=in_reply_to_status_id]").val(tweet.id_str);
-        return $("#tweet-post-form textarea[name=tweet]").val("@" + tweet.user.screen_name + " ");
-      }))).append($("<div>").text("RT").addClass("RT")).append($("<div>").css({
+        return $("#tweet-post-form input[name=in_reply_to_status_id]").val(tweet.id_str);
+      }, $("#tweet-post-form textarea[name=tweet]").val("@" + tweet.user.screen_name + " ")))).append(this.makeFavoriteElement(tweet)).append($("<div>").text("RT").addClass("RT")).append($("<div>").css({
         clear: "both"
       }));
+    },
+    makeFavoriteElement: function(tweet) {
+      var fav;
+      fav = $("<a>").attr({
+        href: "#"
+      }).text("favorite").addClass("favorite");
+      if (tweet.favorited) {
+        fav.addClass("favorited");
+      }
+      fav.click(function() {
+        var api;
+        api = $(this).hasClass("favorited") ? "delete" : "create";
+        return $.post("/twitter/favorite/" + api, {
+          tweet_id: tweet.id_str
+        }, function(response, status) {
+          if (api === "create") {
+            fav.addClass("favorited");
+          } else {
+            fav.removeClass("favorited");
+          }
+          return false;
+        });
+      });
+      return fav;
     },
     getTimeline: function() {
       var diffTimeline, params;
@@ -247,7 +272,7 @@ if ((_ref = window.maptter) == null) {
       return _results;
     }
   };
-}
+};
 router({
   path: "/",
   func: function() {

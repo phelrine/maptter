@@ -114,4 +114,16 @@ class Maptter < Sinatra::Base
     content_type :json
     JSON.unparse current_user.tweet(params[:tweet], params)
   end
+
+  post '/twitter/favorite/create' do
+    halt 400 unless login?
+    content_type :json
+    JSON.unparse current_user.create_favorite(params[:tweet_id])
+  end
+
+  post '/twitter/favorite/delete' do
+    halt 400 unless login?
+    content_type :json
+    JSON.unparse current_user.remove_favorite(params[:tweet_id])
+  end
 end

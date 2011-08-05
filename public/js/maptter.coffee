@@ -102,11 +102,26 @@ window.maptter ?=
       .append($("<div>").text(tweet.user.name).addClass("name"))
       .append($("<div>").text(tweet.text).addClass("text"))
       .append($("<a>").attr(href: "#").text("reply").addClass("reply").click((->
-      		$("#tweet-post-form input[name=in_reply_to_status_id]").val(tweet.id_str)
+          $("#tweet-post-form input[name=in_reply_to_status_id]").val(tweet.id_str)
       		$("#tweet-post-form textarea[name=tweet]").val("@" + tweet.user.screen_name + " ");
       )))
+      .append(@makeFavoriteElement(tweet))
       .append($("<div>").text("RT").addClass("RT"))
       .append($("<div>").css(clear: "both"))
+
+  makeFavoriteElement: (tweet) ->
+    fav = $("<a>").attr(href: "#").text("favorite").addClass("favorite")
+    fav.addClass("favorited") if tweet.favorited
+    fav.click(->
+      api = if $(this).hasClass("favorited") then "delete" else "create"
+      $.post "/twitter/favorite/" + api, tweet_id: tweet.id_str, (response, status)->
+        if api == "create"
+          fav.addClass("favorited")
+        else
+          fav.removeClass("favorited")
+        return false
+    )
+    return fav
 
   getTimeline: ->
     return if $(".ui-draggable-dragging").length > 0
