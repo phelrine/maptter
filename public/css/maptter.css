@@ -72,16 +72,16 @@ div#headerContainer header ul li:last-child{
 /* ------------------------------------- */
 /* mapContainer                          */
 /* ------------------------------------- */
-
-div#mapContainer{
+div#main{
     width: 1080px;
+    height: 700px;
     margin: 1.5% auto;
 }
 
 div.pane{
-    height: 560px;
     border: 1px #ccc solid;
     border-radius: 8px;
+    box-shadow: 0px 3px 5px #000;
 }
 
 div#timelinePane{
@@ -97,17 +97,14 @@ div#timelinePane form{
     margin: 5px;
 }
 
-input#tweetTextArea{
+div#timelinePane textarea{
     width: 100%;
     height: 50px;
 }
 
-input#tweetSubmitButton{
-    text-align: right;
-}
-
 div#timelineTabs{
     width: 95%;
+    height: 500px;
     margin: 1px auto;
 }
 
@@ -117,12 +114,15 @@ div#timelinePane .tab{
     overflow: auto;
 }
 
+div#mapContainer{
+    width: 700px;
+    float: left;
+}
+
 div#map{
     background: rgba(255, 255, 255, 0.7);
-    left: 360px;
-    width: 700px;
-    height: 100%;
-    margin: 10px;
+    height: 95%;
+    margin: 10px 0px;
     position: relative;
 }
 
@@ -131,7 +131,6 @@ div#mapContainer div#map div.panel{
     background: rgba(0, 0, 0, 0.7);
     border-radius: 3px;
     margin-bottom: 20px;
-    box-shadow: 0px 3px 5px #000;
 }
 
 input.toggleButton{
@@ -148,12 +147,9 @@ input.toggleButton:hover{
 }
 
 div#friendsPane{
-    width: 600px;
-}
-
-div#friendsScrollContainer{
-    max-height: 270px;
-    overflow: auto;
+    background: rgba(0, 0, 0, 0.7);
+    width: 100%;
+    text-align: center;
 }
 
 div#friendsPane:hover{

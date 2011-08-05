@@ -19,9 +19,7 @@ router = function() {
     }
   }
 };
-if ((_ref = window.maptter) != null) {
-  _ref;
-} else {
+if ((_ref = window.maptter) == null) {
   window.maptter = {
     friends: [],
     moveTasks: {},
@@ -272,7 +270,7 @@ if ((_ref = window.maptter) != null) {
       return _results;
     }
   };
-};
+}
 router({
   path: "/",
   func: function() {
@@ -325,9 +323,9 @@ router({
           return window.maptter.updateNeighbors();
         }
       });
-      return $("#tweet-post-form").submit(function() {
-        $.post("/twitter/update", $("#tweet-post-form").serialize(), function(tweet, status) {
-          $("#tweet-post-form textarea[name=tweet]").val("");
+      return $("#tweetPostForm").submit(function() {
+        $.post("/twitter/update", $("#tweetPostForm").serialize(), function(tweet, status) {
+          $("#tweetPostForm textarea[name=tweet]").val("");
           return $(".timeline").prepend(maptter.makeTweet(tweet).addClass("tmp"));
         });
         return false;

@@ -1,8 +1,33 @@
 <div id="main">
   <% if login? %>
   <h2>Your map</h2>
+  <div id="timelinePane" class="pane">
+    <form id="tweetPostForm">
+      <label>
+	<p>what are you doing?</p>
+	<textarea name="tweet"></textarea>
+      </label>
+      <input type="submit" value="tweet"/>
+    </form>
+    <div id="timelineTabs">
+      <ul>
+        <li><a href="#mapTab">map</a></li>
+        <li><a href="#timelineTab">TL</a></li>
+        <li><a href="#replyTab">@</a></li>
+      </ul>
+      <div id="mapTab" class="tab">
+        <ul class="statusList"></ul>
+      </div>
+      <div id="timelineTab" class="tab">
+        <ul class="statusList"></ul>
+      </div>
+      <div id="replyTab" class="tab">
+        <ul class="statusList"></ul>
+      </div>
+    </div>
+  </div>
   <div id="mapContainer">
-    <div id="friendsPane">
+    <div id="friendsPane" class="pane">
       <header>
 	<input type="button" id="addFriendButton" class="toggleButton" value="Add Friends" />
       </header>
@@ -10,31 +35,7 @@
         <ul id="friendsList"></ul>
       </div>
     </div>
-    <div id="timelinePane" class="pane">
-      <form id="tweetPostForm">
-	<label>
-	  <p>what are you doing?</p>
-	  <input id="tweetTextArea" type="textarea" name="tweet" value=""/>
-	</label>
-	<input id="tweetSubmitButton" type="button" value="tweet"/>
-      </form>
-      <div id="timelineTabs">
-        <ul>
-          <li><a href="#mapTab">map</a></li>
-          <li><a href="#timelineTab">TL</a></li>
-          <li><a href="#replyTab">@</a></li>
-        </ul>
-        <div id="mapTab" class="tab">
-          <ul class="statusList"></ul>
-        </div>
-        <div id="timelineTab" class="tab">
-          <ul class="statusList"></ul>
-        </div>
-        <div id="replyTab" class="tab">
-          <ul class="statusList"></ul>
-        </div>
-      </div>
-    </div>
+    
     <div id="map" class="pane">
     </div>
   </div>

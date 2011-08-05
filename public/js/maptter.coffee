@@ -222,9 +222,9 @@ router({
           window.maptter.neighborLength = ui.value
           window.maptter.updateNeighbors()
 
-      $("#tweet-post-form").submit ->
-        $.post "/twitter/update", $("#tweet-post-form").serialize(), (tweet, status) ->
-          $("#tweet-post-form textarea[name=tweet]").val ""
+      $("#tweetPostForm").submit ->
+        $.post "/twitter/update", $("#tweetPostForm").serialize(), (tweet, status) ->
+          $("#tweetPostForm textarea[name=tweet]").val ""
           $(".timeline").prepend(maptter.makeTweet(tweet).addClass("tmp"))
         return false
 
