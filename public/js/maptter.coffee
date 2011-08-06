@@ -101,10 +101,11 @@ window.maptter ?=
       .append($("<div>").text(tweet.user.screen_name).addClass("screenname"))
       .append($("<div>").text(tweet.user.name).addClass("name"))
       .append($("<div>").text(tweet.text).addClass("text"))
-      .append($("<a>").attr(href: "#").text("reply").addClass("reply").click((->
-          $("#tweet-post-form input[name=in_reply_to_status_id]").val(tweet.id_str)
-      		$("#tweet-post-form textarea[name=tweet]").val("@" + tweet.user.screen_name + " ");
-      )))
+      .append($("<a>").attr(href: "#").text("reply").addClass("reply").click(->
+        $("#tweetPostForm input[name=in_reply_to_status_id]").val(tweet.id_str)
+        $("#tweetPostForm textarea[name=tweet]").val("@" + tweet.user.screen_name + " ")
+        return false
+      ))
       .append(@makeFavoriteElement(tweet))
       .append($("<div>").css(clear: "both"))
 
