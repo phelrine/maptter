@@ -68,7 +68,6 @@ div#headerContainer header ul li:last-child{
     border-right: 0px;
 }
 
-
 /* ------------------------------------- */
 /* mapContainer                          */
 /* ------------------------------------- */
@@ -89,7 +88,7 @@ div#timelinePane{
     color: white;
     width: 350px;
     height: 100%;
-    margin: 10px;
+    margin: 0px 10px;
     float: left;
 }
 
@@ -99,17 +98,17 @@ div#timelinePane form{
 
 div#timelinePane textarea{
     width: 100%;
-    height: 50px;
+    height: 100px;
 }
 
 div#timelineTabs{
     width: 95%;
-    height: 500px;
+    height: 530px;
     margin: 1px auto;
 }
 
 div#timelinePane .tab{
-    max-height: 450px;
+    max-height: 480px;
     padding: 5px;
     overflow: auto;
 }
@@ -129,7 +128,7 @@ div#friendsPane:hover{
     opacity: 1;
 }
 
-div#friendsPane img{
+ul#friendsList img{
     width: 48px;
     heigh: 48px;
     margin: 1px;
@@ -171,7 +170,53 @@ div#map.addFriend{
     background: rgba(255, 255, 255, 0.9);
 }
 
-div.status{
+li.status{
+    padding: 3px;
+    vertical-align: middle;
+}
+
+li.status:hover{
+    background: rgba(12, 21, 223, 0.4);
+}
+
+li.status div.image{
+    width: 50px;
+    padding: 1px;
+    float: left;
+}
+
+li.status div.image img{
+    width: 48px;
+    height: 48px;
+}
+
+li.status div.content{
+    margin-left: 50px;
+}
+
+li.status div.content span.screenname{
+    font-size: 90%;
+}
+
+li.status div.content span.screenname:after{
+    content: " ";
+}
+
+li.status div.content span.name{
+    font-size: 80%;
+}
+
+li.status div.content div.text{
+    margin: 5px 0px;
+}
+
+li.status div.content div.tool{
+    font-size: 90%;
+    visibility: hidden;
+}
+
+li.status div.content div.tool a:after{
+    content: " ";
 }
 
 /* ------------------------------------- */

@@ -157,16 +157,26 @@ if ((_ref = window.maptter) == null) {
       }
     },
     makeTweet: function(tweet) {
-      return $("<div>").addClass("status").append($("<img>").attr({
+      return $("<li>").addClass("status").append($("<div>").addClass("image").append($("<img>").attr({
         src: tweet.user.profile_image_url
-      }).addClass("image")).append($("<div>").text(tweet.user.screen_name).addClass("screenname")).append($("<div>").text(tweet.user.name).addClass("name")).append($("<div>").text(tweet.text).addClass("text")).append($("<a>").attr({
+      }))).append($("<div>").addClass("content").append($("<span>").text(tweet.user.screen_name).addClass("screenname")).append($("<span>").text(tweet.user.name).addClass("name")).append($("<div>").text(tweet.text).addClass("text")).append($("<div>").addClass("tool").append($("<a>").addClass("timestamp").attr({
+        href: "http://twitter.com/#!/" + tweet.user.screen_name + "/status/" + tweet.id_str,
+        target: "_blank",
+        title: new Date(tweet.created_at)
+      }).timeago()).append($("<a>").attr({
         href: "#"
       }).text("reply").addClass("reply").click(function() {
         $("#tweetPostForm input[name=in_reply_to_status_id]").val(tweet.id_str);
         $("#tweetPostForm textarea[name=tweet]").val("@" + tweet.user.screen_name + " ");
         return false;
-      })).append(this.makeFavoriteElement(tweet)).append($("<div>").css({
-        clear: "both"
+      })).append(this.makeFavoriteElement(tweet)))).append($("<div>").addClass("clear")).hover((function() {
+        return $(this).find("div.tool").css({
+          visibility: "visible"
+        });
+      }), (function() {
+        return $(this).find("div.tool").css({
+          visibility: "hidden"
+        });
       }));
     },
     makeFavoriteElement: function(tweet) {
@@ -274,10 +284,7 @@ if ((_ref = window.maptter) == null) {
         }), (function() {
           $("#map strong").hide();
           return $("#map").removeClass("addFriend");
-        })).css({
-          height: "48px",
-          width: "48px"
-        })));
+        }))));
       }
       return _results;
     }
@@ -347,8 +354,11 @@ router({
       });
       return $("#tweetPostForm").submit(function() {
         $.post("/twitter/update", $("#tweetPostForm").serialize(), function(tweet, status) {
+          var tweetElem;
           $("#tweetPostForm textarea[name=tweet]").val("");
-          return $(".timeline").prepend(maptter.makeTweet(tweet).addClass("tmp"));
+          tweetElem = window.maptter.makeTweet(tweet).addClass("tmp");
+          $("div#timelineTab .statusList").prepend(tweetElem.clone());
+          return $("div#mapTab .statusList").prepend(tweetElem);
         });
         return false;
       });

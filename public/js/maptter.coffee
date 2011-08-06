@@ -98,17 +98,28 @@ window.maptter ?=
         $("div#mapTab .statusList").append(@makeTweet tweet)
 
   makeTweet: (tweet) ->
-    $("<div>").addClass("status").append($("<img>").attr(src: tweet.user.profile_image_url).addClass("image"))
-      .append($("<div>").text(tweet.user.screen_name).addClass("screenname"))
-      .append($("<div>").text(tweet.user.name).addClass("name"))
-      .append($("<div>").text(tweet.text).addClass("text"))
-      .append($("<a>").attr(href: "#").text("reply").addClass("reply").click(->
-        $("#tweetPostForm input[name=in_reply_to_status_id]").val(tweet.id_str)
-        $("#tweetPostForm textarea[name=tweet]").val("@" + tweet.user.screen_name + " ")
-        return false
-      ))
-      .append(@makeFavoriteElement(tweet))
-      .append($("<div>").css(clear: "both"))
+    $("<li>").addClass("status")
+      .append($("<div>").addClass("image").append($("<img>").attr(src: tweet.user.profile_image_url)))
+      .append($("<div>").addClass("content")
+        .append($("<span>").text(tweet.user.screen_name).addClass("screenname"))
+        .append($("<span>").text(tweet.user.name).addClass("name"))
+        .append($("<div>").text(tweet.text).addClass("text"))
+        .append($("<div>").addClass("tool")
+          .append($("<a>").addClass("timestamp").attr(
+              href: "http://twitter.com/#!/" + tweet.user.screen_name + "/status/" + tweet.id_str
+              target: "_blank"
+              title: new Date(tweet.created_at)
+            ).timeago()
+          )
+          .append($("<a>").attr(href: "#").text("reply").addClass("reply").click(->
+            $("#tweetPostForm input[name=in_reply_to_status_id]").val(tweet.id_str)
+            $("#tweetPostForm textarea[name=tweet]").val("@" + tweet.user.screen_name + " ")
+            return false
+          ))
+          .append(@makeFavoriteElement(tweet))
+        ))
+      .append($("<div>").addClass("clear"))
+      .hover((-> $(this).find("div.tool").css(visibility: "visible")), (-> $(this).find("div.tool").css(visibility: "hidden")))
 
   makeFavoriteElement: (tweet) ->
     fav = $("<a>").attr(href: "#").text("favorite").addClass("favorite")
@@ -182,10 +193,6 @@ window.maptter ?=
             $("#map strong").hide()
             $("#map").removeClass "addFriend")
         )
-        .css(
-          height: "48px"
-          width: "48px"
-        )
       )
 
 router({
@@ -243,7 +250,9 @@ router({
       $("#tweetPostForm").submit ->
         $.post "/twitter/update", $("#tweetPostForm").serialize(), (tweet, status) ->
           $("#tweetPostForm textarea[name=tweet]").val ""
-          $(".timeline").prepend(maptter.makeTweet(tweet).addClass("tmp"))
+          tweetElem = window.maptter.makeTweet(tweet).addClass("tmp")
+          $("div#timelineTab .statusList").prepend(tweetElem.clone())
+          $("div#mapTab .statusList").prepend(tweetElem)
         return false
 
     $(window).unload ->
