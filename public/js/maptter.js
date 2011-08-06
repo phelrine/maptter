@@ -27,6 +27,7 @@ if ((_ref = window.maptter) == null) {
     neighborLength: 200,
     allTimeline: [],
     neighborsTimeline: [],
+    refreshLockCount: 0,
     initFriendsMap: function() {
       setInterval((__bind(function() {
         return this.saveMoveTasks();
@@ -160,9 +161,11 @@ if ((_ref = window.maptter) == null) {
         src: tweet.user.profile_image_url
       }).addClass("image")).append($("<div>").text(tweet.user.screen_name).addClass("screenname")).append($("<div>").text(tweet.user.name).addClass("name")).append($("<div>").text(tweet.text).addClass("text")).append($("<a>").attr({
         href: "#"
-      }).text("reply").addClass("reply").click((function() {
-        return $("#tweet-post-form input[name=in_reply_to_status_id]").val(tweet.id_str);
-      }, $("#tweet-post-form textarea[name=tweet]").val("@" + tweet.user.screen_name + " ")))).append(this.makeFavoriteElement(tweet)).append($("<div>").css({
+      }).text("reply").addClass("reply").click(function() {
+        $("#tweetPostForm input[name=in_reply_to_status_id]").val(tweet.id_str);
+        $("#tweetPostForm textarea[name=tweet]").val("@" + tweet.user.screen_name + " ");
+        return false;
+      })).append(this.makeFavoriteElement(tweet)).append($("<div>").css({
         clear: "both"
       }));
     },
@@ -193,6 +196,9 @@ if ((_ref = window.maptter) == null) {
     getTimeline: function() {
       var diffTimeline, params;
       if ($(".ui-draggable-dragging").length > 0) {
+        return;
+      }
+      if (this.refreshLockCount > 0) {
         return;
       }
       params = {
@@ -291,6 +297,7 @@ router({
         accept: ":not(.icon)",
         drop: function(event, ui) {
           var friend, mapOffset;
+          window.maptter.refreshLockCount++;
           ui.helper.draggable({
             disabled: true
           }).attr({
@@ -298,20 +305,30 @@ router({
           });
           friend = ui.helper.data("profile");
           mapOffset = $("#map").offset();
-          return $.post("/map/add", {
-            user_id: friend.id_str,
-            top: ui.offset.top - mapOffset.top,
-            left: ui.offset.left - mapOffset.left,
-            profile: friend
-          }, function(data, status) {
-            var icon;
-            $.extend(friend, data);
-            icon = window.maptter.makeDraggableIcon(friend).hide();
-            window.maptter.friends.push(icon);
-            $("#map").append(icon);
-            ui.helper.remove();
-            icon.fadeIn('slow');
-            return window.maptter.updateNeighbors();
+          return $.ajax({
+            url: "/map/add",
+            type: "POST",
+            data: {
+              user_id: friend.id_str,
+              top: ui.offset.top - mapOffset.top,
+              left: ui.offset.left - mapOffset.left,
+              profile: friend
+            },
+            error: function(request, status, error) {
+              window.maptter.refreshLockCount--;
+              return ui.helper.remove();
+            },
+            success: function(data, status) {
+              var icon;
+              window.maptter.refreshLockCount--;
+              $.extend(friend, data);
+              icon = window.maptter.makeDraggableIcon(friend).hide();
+              window.maptter.friends.push(icon);
+              $("#map").append(icon);
+              ui.helper.remove();
+              icon.fadeIn('slow');
+              return window.maptter.updateNeighbors();
+            }
           });
         }
       });

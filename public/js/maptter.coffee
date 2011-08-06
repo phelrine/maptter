@@ -14,6 +14,7 @@ window.maptter ?=
   neighborLength: 200
   allTimeline: []
   neighborsTimeline: []
+  refreshLockCount: 0
 
   initFriendsMap: ->
     setInterval (=> @saveMoveTasks()), 10000
@@ -125,6 +126,7 @@ window.maptter ?=
 
   getTimeline: ->
     return if $(".ui-draggable-dragging").length > 0
+    return if @refreshLockCount > 0
     params = count: 100
     diffTimeline = []
 
@@ -201,15 +203,23 @@ router({
       $("#map").droppable
         accept: ":not(.icon)"
         drop: (event, ui) ->
+          window.maptter.refreshLockCount++
           ui.helper.draggable(disabled: true).attr(src: "img/loading.gif")
           friend = ui.helper.data("profile")
           mapOffset = $("#map").offset()
-          $.post "/map/add", {
-              user_id: friend.id_str,
-        			top: ui.offset.top - mapOffset.top,
-        			left: ui.offset.left - mapOffset.left,
-        			profile: friend
-            }, (data, status) ->
+          $.ajax {
+            url: "/map/add"
+            type: "POST"
+            data:
+              user_id: friend.id_str
+              top: ui.offset.top - mapOffset.top
+              left: ui.offset.left - mapOffset.left
+              profile: friend
+            error: (request, status, error) ->
+              window.maptter.refreshLockCount--
+              ui.helper.remove()
+            success: (data, status) ->
+              window.maptter.refreshLockCount--
               $.extend(friend, data)
               icon = window.maptter.makeDraggableIcon(friend).hide()
               window.maptter.friends.push icon
@@ -217,6 +227,7 @@ router({
               ui.helper.remove()
               icon.fadeIn 'slow'
               window.maptter.updateNeighbors()
+          }
 
       $(".slider").slider
         range: "min"
