@@ -9,6 +9,30 @@ class Maptter < Sinatra::Base
   configure do
     use Rack::Session::Cookie, :secret => User::CONSUMER_SECRET
     MongoMapper.database = "maptter"
+    set :logging, true
+    set :dump_errors, false
+    set :show_exceptions, false
+  end
+  
+  not_found do
+    "not found"
+  end
+
+  error Rubytter::APIError do
+    status 500
+    env['sinatra.error'].message
+  end
+
+  error do
+    status 500
+    Model.logger.warn env['sinatra.error'].message
+    "sorry..."
+  end
+
+  before do
+    if request.request_method == "POST"
+      halt 500, "not login" unless login?
+    end
   end
   
   helpers do
@@ -67,13 +91,12 @@ class Maptter < Sinatra::Base
 
   # Map API
   get '/map/friends' do
-    halt 400 unless login?
+    halt 500, "not login" unless login?
     content_type :json
     JSON.unparse current_user.current_map.get_members
   end
 
   post '/map/save' do
-    halt 400 unless login?
     JSON.parse(params[:tasks]).each{|task|
       task.symbolize_keys!
       next unless task.has_key? :type
@@ -91,7 +114,6 @@ class Maptter < Sinatra::Base
   end
 
   post '/map/add' do
-    halt 400 unless login?
     params[:friend_id] =current_user.current_map.add_member(params)
     content_type :json 
     JSON.unparse params
@@ -99,25 +121,22 @@ class Maptter < Sinatra::Base
   
   # Twitter API
   get '/twitter/timeline' do
-    halt 400 unless login?
+    halt 500, "not login" unless login?
     content_type :json
     JSON.unparse current_user.friends_timeline(params)
   end
 
   post '/twitter/update' do
-    halt 400 unless login?
     content_type :json
     JSON.unparse current_user.tweet(params[:tweet], params)
   end
 
   post '/twitter/favorite/create' do
-    halt 400 unless login?
     content_type :json
     JSON.unparse current_user.create_favorite(params[:tweet_id])
   end
 
   post '/twitter/favorite/delete' do
-    halt 400 unless login?
     content_type :json
     JSON.unparse current_user.remove_favorite(params[:tweet_id])
   end
