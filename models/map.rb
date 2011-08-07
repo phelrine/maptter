@@ -90,14 +90,11 @@ class Map
       Model.logger.warn "user not found #{friend_id}"
       return {:result => false} 
     end
-
     friend = friends[index]
-    list_api(:remove_member_from_list, friend.user_id)
-    Model.logger.info "REMOVE_MEMBER: #{list_id} #{friend.user_id}"
-    result = {:result => true, :user_id => friend.user_id}
     friends.delete_at(index)
     save
-    result
+    list_api(:remove_member_from_list, friend.user_id)
+    Model.logger.info "REMOVE_MEMBER: #{list_id} #{friend.user_id}"
   end
 
 end
