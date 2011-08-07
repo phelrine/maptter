@@ -32,6 +32,7 @@ class Maptter < Sinatra::Base
   before do
     if request.request_method == "POST"
       halt 500, "not login" unless login?
+      halt 500, "invalid token" unless params[:token] == current_user.token
     end
   end
   

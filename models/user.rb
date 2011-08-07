@@ -5,7 +5,7 @@ require 'oauth'
 class User
   include MongoMapper::Document
   CONSUMER_KEY, CONSUMER_SECRET = File.open("consumer.cfg").read.split("\n")
-  
+  TOKEN_SECRET_KEYWORD = "change me"
   key :user_id, String
   key :access_token, String
   key :access_secret, String
@@ -20,6 +20,10 @@ class User
       CONSUMER_SECRET,
       :site => "http://api.twitter.com"
       )
+  end
+
+  def token
+    Digest::SHA1.hexdigest(self.id.to_s + TOKEN_SECRET_KEYWORD)
   end
   
   def create_map(map_name = "maptter-list")
@@ -59,15 +63,9 @@ class User
       @rubytter.method(api).call(*args)
     rescue Rubytter::APIError => error
       Model.logger.warn "api error: #{error.message}"
-      if error.message == "Could not authenticate with OAuth."
-        raise OAuthRevoked.new(error.message)
-      else
-        raise error
-      end
+      raise error
     end
   end
-  
-  class OAuthRevoked < Exception; end
   
   def profile(user_id = self.user_id)
     Cache.get_or_set("profile-#{user_id}", 3600){

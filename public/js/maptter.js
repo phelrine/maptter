@@ -156,7 +156,8 @@ if ((_ref = window.maptter) == null) {
       }).call(this));
       this.saveTasks = {};
       $.post("/map/save", {
-        tasks: params
+        tasks: params,
+        token: $("#token").val()
       });
     },
     updateDistances: function() {
@@ -289,7 +290,8 @@ if ((_ref = window.maptter) == null) {
         var api;
         api = $(this).hasClass("favorited") ? "delete" : "create";
         return $.post("/twitter/favorite/" + api, {
-          tweet_id: tweet.id_str
+          tweet_id: tweet.id_str,
+          token: $("#token").val()
         }, function(response, status) {
           if (api === "create") {
             fav.addClass("favorited");
@@ -416,6 +418,7 @@ router({
             url: "/map/add",
             type: "POST",
             data: {
+              token: $("#token").val(),
               user_id: friend.id_str,
               top: ui.offset.top - mapOffset.top,
               left: ui.offset.left - mapOffset.left,

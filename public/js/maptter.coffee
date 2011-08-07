@@ -111,7 +111,9 @@ window.maptter ?=
         value
     )
     @saveTasks = {}
-    $.post "/map/save", tasks: params
+    $.post "/map/save",
+      tasks: params
+      token: $("#token").val()
     return
 
   updateDistances: ->
@@ -201,12 +203,15 @@ window.maptter ?=
     fav.addClass("favorited") if tweet.favorited
     fav.click(->
       api = if $(this).hasClass("favorited") then "delete" else "create"
-      $.post "/twitter/favorite/" + api, tweet_id: tweet.id_str, (response, status)->
-        if api == "create"
-          fav.addClass("favorited")
-        else
-          fav.removeClass("favorited")
-        return false
+      $.post "/twitter/favorite/" + api,
+        tweet_id: tweet.id_str
+        token: $("#token").val(),
+         (response, status)->
+          if api == "create"
+            fav.addClass("favorited")
+          else
+            fav.removeClass("favorited")
+          return false
     )
     return fav
 
@@ -295,6 +300,7 @@ router({
             url: "/map/add"
             type: "POST"
             data:
+              token: $("#token").val()
               user_id: friend.id_str
               top: ui.offset.top - mapOffset.top
               left: ui.offset.left - mapOffset.left
