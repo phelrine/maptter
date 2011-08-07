@@ -76,7 +76,6 @@ class Maptter < Sinatra::Base
     halt 400 unless login?
     JSON.parse(params[:tasks]).each{|task|
       task.symbolize_keys!
-      puts task
       next unless task.has_key? :type
       case task[:type]
       when "remove"

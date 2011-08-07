@@ -28,8 +28,7 @@ window.maptter ?=
         @friends[friend.friend_id] = icon
         @user = icon if @user == null
       @updateDistances()
-
-    @getTimeline()
+      @getTimeline()
 
   makeDraggableIcon: (friend) ->
     return $("<img>").addClass("icon").data(
@@ -204,7 +203,7 @@ window.maptter ?=
           revert: "invalid"
           opacity: 0.5
         )
-        .data({profile: user})
+        .data(profile: user)
         .attr(
           src: user.profile_image_url
           alt: user.screen_name
@@ -225,9 +224,8 @@ router({
     $(document).ready ->
       window.maptter.initFriendsMap()
 
-      $("div#friendsScrollContainer").hide()
       $("#addFriendButton").click ->
-        $("div#friendsScrollContainer").slideToggle("slow")
+        $("#friendsList").slideToggle("slow")
 
       $("#timelineTabs").tabs()
 

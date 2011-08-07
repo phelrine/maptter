@@ -36,7 +36,7 @@ if ((_ref = window.maptter) == null) {
       setInterval((__bind(function() {
         return this.getTimeline();
       }, this)), 20000);
-      $.get("/map/friends", "", __bind(function(friends, status) {
+      return $.get("/map/friends", "", __bind(function(friends, status) {
         var friend, icon, _i, _len;
         for (_i = 0, _len = friends.length; _i < _len; _i++) {
           friend = friends[_i];
@@ -47,9 +47,9 @@ if ((_ref = window.maptter) == null) {
             this.user = icon;
           }
         }
-        return this.updateDistances();
+        this.updateDistances();
+        return this.getTimeline();
       }, this));
-      return this.getTimeline();
     },
     makeDraggableIcon: function(friend) {
       return $("<img>").addClass("icon").data({
@@ -333,9 +333,8 @@ router({
   func: function() {
     $(document).ready(function() {
       window.maptter.initFriendsMap();
-      $("div#friendsScrollContainer").hide();
       $("#addFriendButton").click(function() {
-        return $("div#friendsScrollContainer").slideToggle("slow");
+        return $("#friendsList").slideToggle("slow");
       });
       $("#timelineTabs").tabs();
       $("#map").droppable({
