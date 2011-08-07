@@ -25,7 +25,7 @@ if ((_ref = window.maptter) == null) {
     friends: [],
     saveTasks: {},
     distances: {},
-    neighborLength: 200,
+    neighborLength: 150,
     allTimeline: [],
     mapTimeline: [],
     refreshLockCount: 0,
@@ -398,6 +398,7 @@ router({
   path: "/",
   func: function() {
     $(document).ready(function() {
+      var handle;
       window.maptter.initFriendsMap();
       $("#addFriendButton").click(function() {
         return $("#friendsList").slideToggle("slow");
@@ -443,17 +444,40 @@ router({
           });
         }
       });
-      $(".slider").slider({
+      handle = null;
+      $("#rangeSlider").slider({
         range: "min",
         min: 100,
-        max: 600,
+        max: 400,
         value: window.maptter.neighborLength,
         slide: function(event, ui) {
-          return $("#slider-length-display").text("Length: " + ui.value);
+          return handle.qtip("option", "content.text", ui.value);
         },
         stop: function(event, ui) {
           window.maptter.neighborLength = ui.value;
           return window.maptter.updateDistances();
+        }
+      });
+      if (handle == null) {
+        handle = $(".ui-slider-handle", this);
+      }
+      handle.qtip({
+        content: "range",
+        position: {
+          my: 'bottom center',
+          at: 'top center',
+          container: handle,
+          adjust: {
+            x: handle.width() / 2,
+            y: -handle.height() / 2
+          }
+        },
+        hide: {
+          delay: 1000
+        },
+        style: {
+          classes: "ui-tooltip-slider",
+          widget: true
         }
       });
       return $("#tweetPostForm").submit(function() {

@@ -301,7 +301,10 @@ div#footerContainer footer div#copy{
     height: 48px;
 }
 
-.slider {
-    width: 640px;
+#rangeSlider {
+    top: 90%;
+    margin-left: auto;
+    margin-right: auto;
+    width: 80%;
 }
 

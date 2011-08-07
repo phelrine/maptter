@@ -12,7 +12,7 @@ window.maptter ?=
   friends: []
   saveTasks: {}
   distances: {}
-  neighborLength: 200
+  neighborLength: 150
   allTimeline: []
   mapTimeline: []
   refreshLockCount: 0
@@ -320,17 +320,35 @@ router({
               window.maptter.updateDistances()
           }
 
-      $(".slider").slider
+      handle = null
+      $("#rangeSlider").slider(
         range: "min"
         min: 100
-        max: 600
+        max: 400
         value: window.maptter.neighborLength
         slide: (event, ui) ->
-          $("#slider-length-display").text "Length: " + ui.value
+          handle.qtip("option", "content.text", ui.value)
         stop: (event, ui) ->
           window.maptter.neighborLength = ui.value
           window.maptter.updateDistances()
+      )
 
+      handle ?= $(".ui-slider-handle", this)
+      handle.qtip(
+        content: "range"
+        position:
+          my: 'bottom center',
+          at: 'top center',
+          container: handle
+          adjust:
+            x: handle.width()/2
+            y: -handle.height()/2
+        hide:
+          delay: 1000
+        style:
+          classes: "ui-tooltip-slider"
+          widget: true
+      )
       $("#tweetPostForm").submit ->
         $.post "/twitter/update", $("#tweetPostForm").serialize(), (tweet, status) ->
           $("#tweetPostForm textarea[name=tweet]").val ""
