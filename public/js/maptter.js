@@ -24,10 +24,10 @@ if ((_ref = window.maptter) == null) {
     user: null,
     friends: {},
     saveTasks: {},
-    neighborIDs: [],
+    distances: {},
     neighborLength: 200,
     allTimeline: [],
-    neighborsTimeline: [],
+    mapTimeline: [],
     refreshLockCount: 0,
     initFriendsMap: function() {
       setInterval((__bind(function() {
@@ -47,7 +47,7 @@ if ((_ref = window.maptter) == null) {
             this.user = icon;
           }
         }
-        return this.updateNeighbors();
+        return this.updateDistances();
       }, this));
       return this.getTimeline();
     },
@@ -77,7 +77,7 @@ if ((_ref = window.maptter) == null) {
             top: ui.position.top,
             left: ui.position.left
           };
-          return this.updateNeighbors();
+          return this.updateDistances();
         }, this)
       }).qtip({
         content: {
@@ -134,57 +134,61 @@ if ((_ref = window.maptter) == null) {
         tasks: params
       });
     },
-    updateNeighbors: function() {
-      var friend, id, length, squaredLeft, squaredTop, _ref2;
-      this.neighborIDs = [];
+    updateDistances: function() {
+      var friend, id, length, squaredLeft, squaredTop, user_id, _base, _ref2, _ref3;
+      this.distances = {};
       _ref2 = this.friends;
       for (id in _ref2) {
         friend = _ref2[id];
+        user_id = friend.data("user_id");
         squaredTop = square(parseFloat(this.user.css("top")) - parseFloat(friend.css("top")));
         squaredLeft = square(parseFloat(this.user.css("left")) - parseFloat(friend.css("left")));
         length = Math.sqrt(squaredTop + squaredLeft);
-        if (length < this.neighborLength) {
-          this.neighborIDs.push(friend.data("user_id"));
-          friend.css("opacity", 1);
-        } else {
-          friend.css("opacity", 0.5);
+        if ((_ref3 = (_base = this.distances)[user_id]) == null) {
+          _base[user_id] = length;
         }
+        if (length < this.distances[user_id]) {
+          this.distances[user_id] = length;
+        }
+        friend.css("opacity", this.distances[user_id] < this.neighborLength ? 1 : 0.5);
       }
-      return this.updateNeighborsTimeline(this.allTimeline);
+      return this.updateMapTimeline(this.allTimeline);
     },
-    updateNeighborsTimeline: function(timeline, merge) {
-      var diff, neighbor, neighborsTimeline, tweet, _i, _j, _k, _l, _len, _len2, _len3, _len4, _ref2, _results, _results2;
+    updateMapTimeline: function(timeline, merge) {
+      var diff, recentMapTimeline, tweet, _i, _j, _len, _len2, _ref2, _results, _results2;
       if (merge == null) {
         merge = false;
       }
-      neighborsTimeline = [];
-      for (_i = 0, _len = timeline.length; _i < _len; _i++) {
-        tweet = timeline[_i];
-        _ref2 = this.neighborIDs;
-        for (_j = 0, _len2 = _ref2.length; _j < _len2; _j++) {
-          neighbor = _ref2[_j];
-          if (neighbor === tweet.user.id_str) {
-            neighborsTimeline.push(tweet);
+      recentMapTimeline = (function() {
+        var _i, _len, _results;
+        _results = [];
+        for (_i = 0, _len = timeline.length; _i < _len; _i++) {
+          tweet = timeline[_i];
+          if (this.distances[tweet.user.id_str] == null) {
+            continue;
           }
+          _results.push(tweet);
         }
-      }
+        return _results;
+      }).call(this);
       if (merge === true) {
         diff = [];
-        $.merge(diff, neighborsTimeline);
-        this.neighborsTimeline = $.merge(neighborsTimeline, this.neighborsTimeline);
+        $.merge(diff, recentMapTimeline);
+        this.mapTimeline = $.merge(recentMapTimeline, this.mapTimeline);
         diff.reverse();
         _results = [];
-        for (_k = 0, _len3 = diff.length; _k < _len3; _k++) {
-          tweet = diff[_k];
+        for (_i = 0, _len = diff.length; _i < _len; _i++) {
+          tweet = diff[_i];
           _results.push($("div#mapTab .statusList").prepend(this.makeTweet(tweet)));
         }
         return _results;
       } else {
-        this.neighborsTimeline = neighborsTimeline;
+        this.mapTimeline = recentMapTimeline;
         $("div#mapTab .statusList").empty();
+        _ref2 = this.mapTimeline;
         _results2 = [];
-        for (_l = 0, _len4 = neighborsTimeline.length; _l < _len4; _l++) {
-          tweet = neighborsTimeline[_l];
+        for (_j = 0, _len2 = _ref2.length; _j < _len2; _j++) {
+          tweet = _ref2[_j];
           _results2.push($("div#mapTab .statusList").append(this.makeTweet(tweet)));
         }
         return _results2;
@@ -273,7 +277,7 @@ if ((_ref = window.maptter) == null) {
         latestTimeline = [];
         $.merge(latestTimeline, diffTimeline);
         this.allTimeline = $.merge(latestTimeline, this.allTimeline);
-        this.updateNeighborsTimeline(diffTimeline, true);
+        this.updateMapTimeline(diffTimeline, true);
         diffTimeline.reverse();
         _results = [];
         for (_j = 0, _len2 = diffTimeline.length; _j < _len2; _j++) {
@@ -368,7 +372,7 @@ router({
               window.maptter.friends[data.frirnd_id] = icon;
               ui.helper.remove();
               icon.fadeIn('slow');
-              return window.maptter.updateNeighbors();
+              return window.maptter.updateDistances();
             }
           });
         }
@@ -383,7 +387,7 @@ router({
         },
         stop: function(event, ui) {
           window.maptter.neighborLength = ui.value;
-          return window.maptter.updateNeighbors();
+          return window.maptter.updateDistances();
         }
       });
       return $("#tweetPostForm").submit(function() {

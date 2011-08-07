@@ -11,10 +11,10 @@ window.maptter ?=
   user: null
   friends: {}
   saveTasks: {}
-  neighborIDs: []
+  distances: {}
   neighborLength: 200
   allTimeline: []
-  neighborsTimeline: []
+  mapTimeline: []
   refreshLockCount: 0
 
   initFriendsMap: ->
@@ -27,7 +27,7 @@ window.maptter ?=
         $("#map").append icon
         @friends[friend.friend_id] = icon
         @user = icon if @user == null
-      @updateNeighbors()
+      @updateDistances()
 
     @getTimeline()
 
@@ -54,7 +54,7 @@ window.maptter ?=
             type: "move"
             top: ui.position.top
             left: ui.position.left
-          @updateNeighbors()
+          @updateDistances()
       ).qtip(
         content:
           text: (api) ->
@@ -92,39 +92,34 @@ window.maptter ?=
     $.post "/map/save", tasks: params
     return
 
-  updateNeighbors: ->
-    @neighborIDs = []
-
+  updateDistances: ->
+    @distances = {}
     for id, friend of @friends
+      user_id = friend.data "user_id"
       squaredTop = square(parseFloat(@user.css "top") - parseFloat(friend.css "top"))
       squaredLeft = square(parseFloat(@user.css "left") - parseFloat(friend.css "left"))
       length = Math.sqrt(squaredTop + squaredLeft)
-      if length < @neighborLength
-        @neighborIDs.push friend.data "user_id"
-        friend.css "opacity", 1
-      else
-        friend.css "opacity", 0.5
+      @distances[user_id] ?= length
+      @distances[user_id] = length if length < @distances[user_id]
+      friend.css "opacity", if @distances[user_id] < @neighborLength then 1 else 0.5
+    @updateMapTimeline(@allTimeline)
 
-    @updateNeighborsTimeline(@allTimeline)
-
-  updateNeighborsTimeline: (timeline, merge = false)->
-    neighborsTimeline = []
-
-    for tweet in timeline
-      for neighbor in @neighborIDs
-        neighborsTimeline.push tweet if neighbor == tweet.user.id_str
+  updateMapTimeline: (timeline, merge = false)->
+    recentMapTimeline = for tweet in timeline
+      continue unless @distances[tweet.user.id_str]?
+      tweet
 
     if merge == true
       diff = []
-      $.merge diff, neighborsTimeline
-      @neighborsTimeline = $.merge neighborsTimeline, @neighborsTimeline
+      $.merge diff, recentMapTimeline
+      @mapTimeline = $.merge recentMapTimeline, @mapTimeline
       diff.reverse()
       for tweet in diff
         $("div#mapTab .statusList").prepend(@makeTweet tweet)
     else
-      @neighborsTimeline = neighborsTimeline
+      @mapTimeline = recentMapTimeline
       $("div#mapTab .statusList").empty()
-      for tweet in neighborsTimeline
+      for tweet in @mapTimeline
         $("div#mapTab .statusList").append(@makeTweet tweet)
 
   makeTweet: (tweet) ->
@@ -187,7 +182,7 @@ window.maptter ?=
       latestTimeline = []
       $.merge latestTimeline, diffTimeline
       @allTimeline = $.merge latestTimeline, @allTimeline
-      @updateNeighborsTimeline diffTimeline, true
+      @updateMapTimeline diffTimeline, true
       diffTimeline.reverse()
       for tweet in diffTimeline
         $("div#timelineTab .statusList").prepend(@makeTweet tweet)
@@ -262,7 +257,7 @@ router({
               window.maptter.friends[data.frirnd_id] = icon
               ui.helper.remove()
               icon.fadeIn 'slow'
-              window.maptter.updateNeighbors()
+              window.maptter.updateDistances()
           }
 
       $(".slider").slider
@@ -274,7 +269,7 @@ router({
           $("#slider-length-display").text "Length: " + ui.value
         stop: (event, ui) ->
           window.maptter.neighborLength = ui.value
-          window.maptter.updateNeighbors()
+          window.maptter.updateDistances()
 
       $("#tweetPostForm").submit ->
         $.post "/twitter/update", $("#tweetPostForm").serialize(), (tweet, status) ->
