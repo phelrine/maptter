@@ -69,6 +69,7 @@ class Map
     friend_data.symbolize_keys!
     if friend_data.has_key? :profile
       profile = friend_data[:profile].symbolize_keys
+      profile[:status].symbolize_keys!
       Cache.set("list-#{id}", member_profiles.merge({profile[:id_str] => profile}), 3600)
       friend_data.delete(:profile)
     end
