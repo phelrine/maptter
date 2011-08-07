@@ -8,8 +8,9 @@ router = (args...) ->
     return func() if path == pathname or (path.test and path.test pathname)
 
 window.maptter ?=
-  friends: []
-  moveTasks: {}
+  user: null
+  friends: {}
+  saveTasks: {}
   neighborIDs: []
   neighborLength: 200
   allTimeline: []
@@ -17,14 +18,15 @@ window.maptter ?=
   refreshLockCount: 0
 
   initFriendsMap: ->
-    setInterval (=> @saveMoveTasks()), 10000
+    setInterval (=> @saveMap()), 10000
     setInterval (=> @getTimeline()), 20000
 
     $.get "/map/friends", "", (friends, status) =>
-      @friends = for friend in friends
+      for friend in friends
         icon = @makeDraggableIcon friend
         $("#map").append icon
-        icon
+        @friends[friend.friend_id] = icon
+        @user = icon if @user == null
       @updateNeighbors()
 
     @getTimeline()
@@ -43,31 +45,59 @@ window.maptter ?=
       ).draggable(
         stack: ".icon"
         containment: "parent"
+        start: (event, ui) =>
+          $(".qtip").qtip('hide')
         stop: (event, ui) =>
-          user_id = ui.helper.data("user_id")
-          @moveTasks[user_id] =
+          friend_id = ui.helper.data("friend_id")
+          @saveTasks[friend_id] =
             friend_id: ui.helper.data("friend_id")
+            type: "move"
             top: ui.position.top
             left: ui.position.left
           @updateNeighbors()
+      ).qtip(
+        content:
+          text: (api) ->
+            return $("<p>").text(friend.name + " ")
+              .append($("<a>").text("@" + friend.screen_name).attr(
+                href: "http://twitter.com/#!/"+friend.screen_name
+                target: "_blank"
+              ))
+              .after($("<a>").text("アイコンを削除").attr(href: "#").click(=>
+                window.maptter.saveTasks[friend.friend_id] =
+                  type: "remove"
+                  friend_id: friend.friend_id
+                $(".qtip").qtip('hide')
+                $(this).hide('slow')
+                $(this).empty()
+              ))
+        style:
+          classes: "ui-tooltip-shadow"
+        show:
+          solo: true
+          event: "click"
+        hide:
+          event: "click unfocus"
+        position:
+          my: "bottom left"
+          at: "top left"
       )
 
-  saveMoveTasks: ->
-    return if $(".ui-draggable-dragging").length > 0 or $.isEmptyObject @moveTasks
-    params = JSON.stringify(for id, value of @moveTasks
+  saveMap: ->
+    return if $(".ui-draggable-dragging").length > 0 or $.isEmptyObject @saveTasks
+    params = JSON.stringify(for id, value of @saveTasks
         value
     )
-    $.post "/map/move", tasks: params, =>
-        @moveTasks = {}
+    @saveTasks = {}
+    $.post "/map/save", tasks: params
     return
 
   updateNeighbors: ->
-    user = @friends[0]
     @neighborIDs = []
 
-    for friend in @friends
-      squaredTop = square(parseFloat(user.css "top") - parseFloat(friend.css "top"))
-      squaredLeft = square(parseFloat(user.css "left") - parseFloat(friend.css "left"))
+    for id, friend of @friends
+      squaredTop = square(parseFloat(@user.css "top") - parseFloat(friend.css "top"))
+      squaredLeft = square(parseFloat(@user.css "left") - parseFloat(friend.css "left"))
       length = Math.sqrt(squaredTop + squaredLeft)
       if length < @neighborLength
         @neighborIDs.push friend.data "user_id"
@@ -118,7 +148,6 @@ window.maptter ?=
           ))
           .append(@makeFavoriteElement(tweet))
         ))
-      .append($("<div>").addClass("clear"))
       .hover((-> $(this).find("div.tool").css(visibility: "visible")), (-> $(this).find("div.tool").css(visibility: "hidden")))
 
   makeFavoriteElement: (tweet) ->
@@ -138,7 +167,7 @@ window.maptter ?=
   getTimeline: ->
     return if $(".ui-draggable-dragging").length > 0
     return if @refreshLockCount > 0
-    params = count: 100
+    params = count: 80
     diffTimeline = []
 
     unless(@allTimeline.length == 0)
@@ -170,7 +199,7 @@ window.maptter ?=
     for tweet in timeline
       users[tweet.user.id_str] = tweet.user
 
-    for friend in @friends
+    for id, friend of @friends
       delete users[friend.data("user_id")]
 
     $("#friendsList").empty()
@@ -229,8 +258,8 @@ router({
               window.maptter.refreshLockCount--
               $.extend(friend, data)
               icon = window.maptter.makeDraggableIcon(friend).hide()
-              window.maptter.friends.push icon
               $("#map").append icon
+              window.maptter.friends[data.frirnd_id] = icon
               ui.helper.remove()
               icon.fadeIn 'slow'
               window.maptter.updateNeighbors()
@@ -256,5 +285,6 @@ router({
         return false
 
     $(window).unload ->
-      window.maptter.saveMoveTasks()
+      window.maptter.saveMap()
 })
+

@@ -72,16 +72,18 @@ class Maptter < Sinatra::Base
     JSON.unparse current_user.current_map.get_members
   end
 
-  post '/map/move' do
+  post '/map/save' do
     halt 400 unless login?
     JSON.parse(params[:tasks]).each{|task|
       task.symbolize_keys!
-      friend = current_user.current_map.find_member(task[:friend_id])
-      if friend
-        friend.move(task[:top], task[:left])
-        params[:result] = true
-      else
-        params[:result] = false
+      puts task
+      next unless task.has_key? :type
+      case task[:type]
+      when "remove"
+        current_user.current_map.remove_member(task[:friend_id])    
+      when "move" 
+        friend = current_user.current_map.find_member(task[:friend_id])
+        friend.move(task[:top], task[:left]) if friend
       end
     }
 
@@ -94,12 +96,6 @@ class Maptter < Sinatra::Base
     params[:friend_id] =current_user.current_map.add_member(params)
     content_type :json 
     JSON.unparse params
-  end
-
-  post '/map/remove' do
-    halt 400 unless login?
-    content_type :json
-    JSON.unparse current_user.current_map.remove_member(params[:friend_id])
   end
   
   # Twitter API

@@ -21,8 +21,9 @@ router = function() {
 };
 if ((_ref = window.maptter) == null) {
   window.maptter = {
-    friends: [],
-    moveTasks: {},
+    user: null,
+    friends: {},
+    saveTasks: {},
     neighborIDs: [],
     neighborLength: 200,
     allTimeline: [],
@@ -30,24 +31,22 @@ if ((_ref = window.maptter) == null) {
     refreshLockCount: 0,
     initFriendsMap: function() {
       setInterval((__bind(function() {
-        return this.saveMoveTasks();
+        return this.saveMap();
       }, this)), 10000);
       setInterval((__bind(function() {
         return this.getTimeline();
       }, this)), 20000);
       $.get("/map/friends", "", __bind(function(friends, status) {
-        var friend, icon;
-        this.friends = (function() {
-          var _i, _len, _results;
-          _results = [];
-          for (_i = 0, _len = friends.length; _i < _len; _i++) {
-            friend = friends[_i];
-            icon = this.makeDraggableIcon(friend);
-            $("#map").append(icon);
-            _results.push(icon);
+        var friend, icon, _i, _len;
+        for (_i = 0, _len = friends.length; _i < _len; _i++) {
+          friend = friends[_i];
+          icon = this.makeDraggableIcon(friend);
+          $("#map").append(icon);
+          this.friends[friend.friend_id] = icon;
+          if (this.user === null) {
+            this.user = icon;
           }
-          return _results;
-        }).call(this);
+        }
         return this.updateNeighbors();
       }, this));
       return this.getTimeline();
@@ -66,26 +65,63 @@ if ((_ref = window.maptter) == null) {
       }).draggable({
         stack: ".icon",
         containment: "parent",
+        start: __bind(function(event, ui) {
+          return $(".qtip").qtip('hide');
+        }, this),
         stop: __bind(function(event, ui) {
-          var user_id;
-          user_id = ui.helper.data("user_id");
-          this.moveTasks[user_id] = {
+          var friend_id;
+          friend_id = ui.helper.data("friend_id");
+          this.saveTasks[friend_id] = {
             friend_id: ui.helper.data("friend_id"),
+            type: "move",
             top: ui.position.top,
             left: ui.position.left
           };
           return this.updateNeighbors();
         }, this)
+      }).qtip({
+        content: {
+          text: function(api) {
+            return $("<p>").text(friend.name + " ").append($("<a>").text("@" + friend.screen_name).attr({
+              href: "http://twitter.com/#!/" + friend.screen_name,
+              target: "_blank"
+            })).after($("<a>").text("アイコンを削除").attr({
+              href: "#"
+            }).click(__bind(function() {
+              window.maptter.saveTasks[friend.friend_id] = {
+                type: "remove",
+                friend_id: friend.friend_id
+              };
+              $(".qtip").qtip('hide');
+              $(this).hide('slow');
+              return $(this).empty();
+            }, this)));
+          }
+        },
+        style: {
+          classes: "ui-tooltip-shadow"
+        },
+        show: {
+          solo: true,
+          event: "click"
+        },
+        hide: {
+          event: "click unfocus"
+        },
+        position: {
+          my: "bottom left",
+          at: "top left"
+        }
       });
     },
-    saveMoveTasks: function() {
+    saveMap: function() {
       var id, params, value;
-      if ($(".ui-draggable-dragging").length > 0 || $.isEmptyObject(this.moveTasks)) {
+      if ($(".ui-draggable-dragging").length > 0 || $.isEmptyObject(this.saveTasks)) {
         return;
       }
       params = JSON.stringify((function() {
         var _ref2, _results;
-        _ref2 = this.moveTasks;
+        _ref2 = this.saveTasks;
         _results = [];
         for (id in _ref2) {
           value = _ref2[id];
@@ -93,21 +129,19 @@ if ((_ref = window.maptter) == null) {
         }
         return _results;
       }).call(this));
-      $.post("/map/move", {
+      this.saveTasks = {};
+      $.post("/map/save", {
         tasks: params
-      }, __bind(function() {
-        return this.moveTasks = {};
-      }, this));
+      });
     },
     updateNeighbors: function() {
-      var friend, length, squaredLeft, squaredTop, user, _i, _len, _ref2;
-      user = this.friends[0];
+      var friend, id, length, squaredLeft, squaredTop, _ref2;
       this.neighborIDs = [];
       _ref2 = this.friends;
-      for (_i = 0, _len = _ref2.length; _i < _len; _i++) {
-        friend = _ref2[_i];
-        squaredTop = square(parseFloat(user.css("top")) - parseFloat(friend.css("top")));
-        squaredLeft = square(parseFloat(user.css("left")) - parseFloat(friend.css("left")));
+      for (id in _ref2) {
+        friend = _ref2[id];
+        squaredTop = square(parseFloat(this.user.css("top")) - parseFloat(friend.css("top")));
+        squaredLeft = square(parseFloat(this.user.css("left")) - parseFloat(friend.css("left")));
         length = Math.sqrt(squaredTop + squaredLeft);
         if (length < this.neighborLength) {
           this.neighborIDs.push(friend.data("user_id"));
@@ -169,7 +203,7 @@ if ((_ref = window.maptter) == null) {
         $("#tweetPostForm input[name=in_reply_to_status_id]").val(tweet.id_str);
         $("#tweetPostForm textarea[name=tweet]").val("@" + tweet.user.screen_name + " ");
         return false;
-      })).append(this.makeFavoriteElement(tweet)))).append($("<div>").addClass("clear")).hover((function() {
+      })).append(this.makeFavoriteElement(tweet)))).hover((function() {
         return $(this).find("div.tool").css({
           visibility: "visible"
         });
@@ -212,7 +246,7 @@ if ((_ref = window.maptter) == null) {
         return;
       }
       params = {
-        count: 100
+        count: 80
       };
       diffTimeline = [];
       if (!(this.allTimeline.length === 0)) {
@@ -251,7 +285,7 @@ if ((_ref = window.maptter) == null) {
       return false;
     },
     updateActiveUser: function(timeline) {
-      var friend, id, tweet, user, users, _i, _j, _len, _len2, _ref2, _results;
+      var friend, id, tweet, user, users, _i, _len, _ref2, _results;
       if (timeline == null) {
         timeline = this.allTimeline;
       }
@@ -261,8 +295,8 @@ if ((_ref = window.maptter) == null) {
         users[tweet.user.id_str] = tweet.user;
       }
       _ref2 = this.friends;
-      for (_j = 0, _len2 = _ref2.length; _j < _len2; _j++) {
-        friend = _ref2[_j];
+      for (id in _ref2) {
+        friend = _ref2[id];
         delete users[friend.data("user_id")];
       }
       $("#friendsList").empty();
@@ -330,8 +364,8 @@ router({
               window.maptter.refreshLockCount--;
               $.extend(friend, data);
               icon = window.maptter.makeDraggableIcon(friend).hide();
-              window.maptter.friends.push(icon);
               $("#map").append(icon);
+              window.maptter.friends[data.frirnd_id] = icon;
               ui.helper.remove();
               icon.fadeIn('slow');
               return window.maptter.updateNeighbors();
@@ -364,7 +398,7 @@ router({
       });
     });
     return $(window).unload(function() {
-      return window.maptter.saveMoveTasks();
+      return window.maptter.saveMap();
     });
   }
 });
