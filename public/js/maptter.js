@@ -22,7 +22,7 @@ router = function() {
 if ((_ref = window.maptter) == null) {
   window.maptter = {
     user: null,
-    friends: {},
+    friends: [],
     saveTasks: {},
     distances: {},
     neighborLength: 200,
@@ -45,7 +45,7 @@ if ((_ref = window.maptter) == null) {
             this.user = icon;
           }
           $("#map").append(icon);
-          this.friends[friend.friend_id] = icon;
+          this.friends.push(icon);
         }
         this.updateDistances();
         return this.getTimeline();
@@ -100,13 +100,19 @@ if ((_ref = window.maptter) == null) {
               text = text.after($("<a>").text("アイコンを削除").attr({
                 href: "#"
               }).click(__bind(function() {
-                var parent;
-                window.maptter.saveTasks[friend.friend_id] = {
+                var parent, self;
+                self = window.maptter;
+                self.saveTasks[friend.friend_id] = {
                   type: "remove",
                   friend_id: friend.friend_id
                 };
-                delete window.maptter.friends[friend.friend_id];
-                window.maptter.updateDistances();
+                $.each(self.friends, function(index, elem) {
+                  if ($(elem).data("friend_id") === friend.friend_id) {
+                    self.friends.splice(index, 1);
+                    return false;
+                  }
+                });
+                self.updateDistances();
                 $("#ui-tooltip-profile").qtip('hide');
                 parent = $(this).parent();
                 parent.fadeOut('slow');
@@ -154,11 +160,11 @@ if ((_ref = window.maptter) == null) {
       });
     },
     updateDistances: function() {
-      var distance, friend, id, squaredLeft, squaredTop, user_id, _base, _ref2, _ref3;
+      var distance, friend, squaredLeft, squaredTop, user_id, _base, _i, _len, _ref2, _ref3;
       this.distances = {};
       _ref2 = this.friends;
-      for (id in _ref2) {
-        friend = _ref2[id];
+      for (_i = 0, _len = _ref2.length; _i < _len; _i++) {
+        friend = _ref2[_i];
         user_id = friend.data("user_id");
         squaredTop = square(parseFloat(this.user.css("top")) - parseFloat(friend.css("top")));
         squaredLeft = square(parseFloat(this.user.css("left")) - parseFloat(friend.css("left")));
@@ -343,7 +349,7 @@ if ((_ref = window.maptter) == null) {
       return false;
     },
     updateActiveUser: function(timeline) {
-      var friend, id, tweet, user, users, _i, _len, _ref2, _results;
+      var friend, id, tweet, user, users, _i, _j, _len, _len2, _ref2, _results;
       if (timeline == null) {
         timeline = this.allTimeline;
       }
@@ -353,8 +359,8 @@ if ((_ref = window.maptter) == null) {
         users[tweet.user.id_str] = tweet.user;
       }
       _ref2 = this.friends;
-      for (id in _ref2) {
-        friend = _ref2[id];
+      for (_j = 0, _len2 = _ref2.length; _j < _len2; _j++) {
+        friend = _ref2[_j];
         delete users[friend.data("user_id")];
       }
       $("#friendsList").empty();
@@ -422,7 +428,7 @@ router({
               $.extend(friend, data);
               icon = window.maptter.makeDraggableIcon(friend).hide();
               $("#map").append(icon);
-              window.maptter.friends[data.frirnd_id] = icon;
+              window.maptter.friends.push(icon);
               ui.helper.remove();
               icon.fadeIn('slow');
               return window.maptter.updateDistances();

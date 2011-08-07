@@ -9,7 +9,7 @@ router = (args...) ->
 
 window.maptter ?=
   user: null
-  friends: {}
+  friends: []
   saveTasks: {}
   distances: {}
   neighborLength: 200
@@ -26,7 +26,7 @@ window.maptter ?=
         icon = @makeDraggableIcon friend, @user?
         @user ?= icon
         $("#map").append icon
-        @friends[friend.friend_id] = icon
+        @friends.push icon
       @updateDistances()
       @getTimeline()
 
@@ -74,11 +74,15 @@ window.maptter ?=
               if hasRemoveUI
                 text = text.after(
                   $("<a>").text("アイコンを削除").attr(href: "#").click =>
-                    window.maptter.saveTasks[friend.friend_id] =
+                    self = window.maptter
+                    self.saveTasks[friend.friend_id] =
                       type: "remove"
                       friend_id: friend.friend_id
-                    delete window.maptter.friends[friend.friend_id]
-                    window.maptter.updateDistances()
+                    $.each self.friends, (index, elem) ->
+                      if $(elem).data("friend_id") == friend.friend_id
+                        self.friends.splice(index, 1)
+                        return false
+                    self.updateDistances()
                     $("#ui-tooltip-profile").qtip('hide')
                     parent = $(this).parent()
                     parent.fadeOut('slow')
@@ -109,7 +113,7 @@ window.maptter ?=
 
   updateDistances: ->
     @distances = {}
-    for id, friend of @friends
+    for friend in @friends
       user_id = friend.data "user_id"
       squaredTop = square(parseFloat(@user.css "top") - parseFloat(friend.css "top"))
       squaredLeft = square(parseFloat(@user.css "left") - parseFloat(friend.css "left"))
@@ -238,7 +242,7 @@ window.maptter ?=
     for tweet in timeline
       users[tweet.user.id_str] = tweet.user
 
-    for id, friend of @friends
+    for friend in @friends
       delete users[friend.data("user_id")]
 
     $("#friendsList").empty()
@@ -297,7 +301,7 @@ router({
               $.extend(friend, data)
               icon = window.maptter.makeDraggableIcon(friend).hide()
               $("#map").append icon
-              window.maptter.friends[data.frirnd_id] = icon
+              window.maptter.friends.push icon
               ui.helper.remove()
               icon.fadeIn 'slow'
               window.maptter.updateDistances()
