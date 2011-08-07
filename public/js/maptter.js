@@ -100,15 +100,17 @@ if ((_ref = window.maptter) == null) {
               text = text.after($("<a>").text("アイコンを削除").attr({
                 href: "#"
               }).click(__bind(function() {
+                var parent;
                 window.maptter.saveTasks[friend.friend_id] = {
                   type: "remove",
                   friend_id: friend.friend_id
                 };
                 delete window.maptter.friends[friend.friend_id];
-                window.maptter.updateNeighbors();
+                window.maptter.updateDistances();
                 $("#ui-tooltip-profile").qtip('hide');
-                $(this).fadeOut('slow');
-                return $(this).empty();
+                parent = $(this).parent();
+                parent.fadeOut('slow');
+                return parent.empty();
               }, this)));
             }
             return text;

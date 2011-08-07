@@ -78,10 +78,11 @@ window.maptter ?=
                       type: "remove"
                       friend_id: friend.friend_id
                     delete window.maptter.friends[friend.friend_id]
-                    window.maptter.updateNeighbors()
+                    window.maptter.updateDistances()
                     $("#ui-tooltip-profile").qtip('hide')
-                    $(this).fadeOut('slow')
-                    $(this).empty()
+                    parent = $(this).parent()
+                    parent.fadeOut('slow')
+                    parent.empty()
                 )
               return text
           style:
