@@ -61,6 +61,7 @@ if ((_ref = window.maptter) == null) {
         friend_id: friend.friend_id,
         user_id: friend.user_id
       }).css({
+        position: "absolute",
         top: friend.top,
         left: friend.left
       }).draggable({

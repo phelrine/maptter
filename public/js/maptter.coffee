@@ -39,6 +39,7 @@ window.maptter ?=
         user_id: friend.user_id
       )
       .css(
+        position: "absolute"
         top: friend.top
         left: friend.left
       )
