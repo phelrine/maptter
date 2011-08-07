@@ -56,22 +56,26 @@ window.maptter ?=
           @updateDistances()
       ).qtip(
         content:
+          title:
+            text: friend.name
+            button: "Close"
           text: (api) ->
-            return $("<p>").text(friend.name + " ")
-              .append($("<a>").text("@" + friend.screen_name).attr(
+            return $("<a>").text("@" + friend.screen_name).attr(
                 href: "http://twitter.com/#!/"+friend.screen_name
                 target: "_blank"
-              ))
+              )
               .after($("<a>").text("アイコンを削除").attr(href: "#").click(=>
                 window.maptter.saveTasks[friend.friend_id] =
                   type: "remove"
                   friend_id: friend.friend_id
+                delete window.maptter.friends[friend.friend_id]
+                window.maptter.updateNeighbors()
                 $(".qtip").qtip('hide')
-                $(this).hide('slow')
+                $(this).fadeOut('slow')
                 $(this).empty()
               ))
         style:
-          classes: "ui-tooltip-shadow"
+          classes: "ui-tooltip-shadow ui-tooltip-light"
         show:
           solo: true
           event: "click"
@@ -97,10 +101,15 @@ window.maptter ?=
       user_id = friend.data "user_id"
       squaredTop = square(parseFloat(@user.css "top") - parseFloat(friend.css "top"))
       squaredLeft = square(parseFloat(@user.css "left") - parseFloat(friend.css "left"))
-      length = Math.sqrt(squaredTop + squaredLeft)
-      @distances[user_id] ?= length
-      @distances[user_id] = length if length < @distances[user_id]
-      friend.css "opacity", if @distances[user_id] < @neighborLength then 1 else 0.5
+      distance = Math.sqrt(squaredTop + squaredLeft)
+      @distances[user_id] ?= distance
+      @distances[user_id] = distance if distance < @distances[user_id]
+      distance = @distances[user_id]
+      if distance < @neighborLength
+        friend.css "opacity", 1
+      else
+        friend.css "opacity", 0.5
+
     @updateMapTimeline(@allTimeline)
 
   updateMapTimeline: (timeline, merge = false)->
@@ -114,12 +123,24 @@ window.maptter ?=
       @mapTimeline = $.merge recentMapTimeline, @mapTimeline
       diff.reverse()
       for tweet in diff
-        $("div#mapTab .statusList").prepend(@makeTweet tweet)
+        $("div#mapTab .statusList").prepend(@makeMapTweet tweet)
     else
       @mapTimeline = recentMapTimeline
       $("div#mapTab .statusList").empty()
       for tweet in @mapTimeline
-        $("div#mapTab .statusList").append(@makeTweet tweet)
+        $("div#mapTab .statusList").append(@makeMapTweet tweet)
+
+  makeMapTweet: (tweet) ->
+    length = @distances[tweet.user.id_str] ? -1
+    return if length < 0 or length < @neighborLength
+        @makeTweet(tweet)
+      else
+        $("<li>").addClass("status iconOnly").append(
+          $("<img>").attr(src: tweet.user.profile_image_url)
+            .after($("<div>").addClass("content")
+              .append($("<span>").text(tweet.user.screen_name +
+                " がツイートしました")))
+        ).append($("<div>").addClass("clear"))
 
   makeTweet: (tweet) ->
     $("<li>").addClass("status")

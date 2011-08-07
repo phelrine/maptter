@@ -81,25 +81,31 @@ if ((_ref = window.maptter) == null) {
         }, this)
       }).qtip({
         content: {
+          title: {
+            text: friend.name,
+            button: "Close"
+          },
           text: function(api) {
-            return $("<p>").text(friend.name + " ").append($("<a>").text("@" + friend.screen_name).attr({
+            return $("<a>").text("@" + friend.screen_name).attr({
               href: "http://twitter.com/#!/" + friend.screen_name,
               target: "_blank"
-            })).after($("<a>").text("アイコンを削除").attr({
+            }).after($("<a>").text("アイコンを削除").attr({
               href: "#"
             }).click(__bind(function() {
               window.maptter.saveTasks[friend.friend_id] = {
                 type: "remove",
                 friend_id: friend.friend_id
               };
+              delete window.maptter.friends[friend.friend_id];
+              window.maptter.updateNeighbors();
               $(".qtip").qtip('hide');
-              $(this).hide('slow');
+              $(this).fadeOut('slow');
               return $(this).empty();
             }, this)));
           }
         },
         style: {
-          classes: "ui-tooltip-shadow"
+          classes: "ui-tooltip-shadow ui-tooltip-light"
         },
         show: {
           solo: true,
@@ -135,7 +141,7 @@ if ((_ref = window.maptter) == null) {
       });
     },
     updateDistances: function() {
-      var friend, id, length, squaredLeft, squaredTop, user_id, _base, _ref2, _ref3;
+      var distance, friend, id, squaredLeft, squaredTop, user_id, _base, _ref2, _ref3;
       this.distances = {};
       _ref2 = this.friends;
       for (id in _ref2) {
@@ -143,14 +149,19 @@ if ((_ref = window.maptter) == null) {
         user_id = friend.data("user_id");
         squaredTop = square(parseFloat(this.user.css("top")) - parseFloat(friend.css("top")));
         squaredLeft = square(parseFloat(this.user.css("left")) - parseFloat(friend.css("left")));
-        length = Math.sqrt(squaredTop + squaredLeft);
+        distance = Math.sqrt(squaredTop + squaredLeft);
         if ((_ref3 = (_base = this.distances)[user_id]) == null) {
-          _base[user_id] = length;
+          _base[user_id] = distance;
         }
-        if (length < this.distances[user_id]) {
-          this.distances[user_id] = length;
+        if (distance < this.distances[user_id]) {
+          this.distances[user_id] = distance;
         }
-        friend.css("opacity", this.distances[user_id] < this.neighborLength ? 1 : 0.5);
+        distance = this.distances[user_id];
+        if (distance < this.neighborLength) {
+          friend.css("opacity", 1);
+        } else {
+          friend.css("opacity", 0.5);
+        }
       }
       return this.updateMapTimeline(this.allTimeline);
     },
@@ -179,7 +190,7 @@ if ((_ref = window.maptter) == null) {
         _results = [];
         for (_i = 0, _len = diff.length; _i < _len; _i++) {
           tweet = diff[_i];
-          _results.push($("div#mapTab .statusList").prepend(this.makeTweet(tweet)));
+          _results.push($("div#mapTab .statusList").prepend(this.makeMapTweet(tweet)));
         }
         return _results;
       } else {
@@ -189,9 +200,20 @@ if ((_ref = window.maptter) == null) {
         _results2 = [];
         for (_j = 0, _len2 = _ref2.length; _j < _len2; _j++) {
           tweet = _ref2[_j];
-          _results2.push($("div#mapTab .statusList").append(this.makeTweet(tweet)));
+          _results2.push($("div#mapTab .statusList").append(this.makeMapTweet(tweet)));
         }
         return _results2;
+      }
+    },
+    makeMapTweet: function(tweet) {
+      var length, _ref2;
+      length = (_ref2 = this.distances[tweet.user.id_str]) != null ? _ref2 : -1;
+      if (length < 0 || length < this.neighborLength) {
+        return this.makeTweet(tweet);
+      } else {
+        return $("<li>").addClass("status iconOnly").append($("<img>").attr({
+          src: tweet.user.profile_image_url
+        }).after($("<div>").addClass("content").append($("<span>").text(tweet.user.screen_name + " がツイートしました")))).append($("<div>").addClass("clear"));
       }
     },
     makeTweet: function(tweet) {

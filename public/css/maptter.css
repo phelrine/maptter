@@ -223,6 +223,27 @@ li.status div.content div.tool a:after{
     content: " ";
 }
 
+li.iconOnly{
+    font-size: 80%;
+    list-style-type: none;
+}
+
+li.iconOnly img{
+    width: 24px;
+    height: 24px;
+    padding: 1px;
+    float: left;
+}
+
+li.iconOnly div.content{
+    padding: 1px;
+    text-align: center;
+}
+
+li.iconOnly div.content span{
+    vertical-align: middle;
+}
+
 /* ------------------------------------- */
 /* footer                                */
 /* ------------------------------------- */
