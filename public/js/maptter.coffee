@@ -68,9 +68,12 @@ window.maptter ?=
               text: friend.name
               button: "Close"
             text: (api) ->
-              text = $("<a>").text("@" + friend.screen_name).attr
-                href: "http://twitter.com/#!/"+friend.screen_name
-                target: "_blank"
+              text = $("<a>").text("@" + friend.screen_name)
+                .attr(
+                  href: "http://twitter.com/#!/"+friend.screen_name
+                  target: "_blank"
+                )
+                .after($("p").text(friend.status?.text))
               if hasRemoveUI
                 text = text.after(
                   $("<a>").text("アイコンを削除").attr(href: "#").click =>
@@ -240,7 +243,10 @@ window.maptter ?=
     users = {}
 
     for tweet in timeline
-      users[tweet.user.id_str] = tweet.user
+      user_id = tweet.user.id_str
+      tweet.user.status = {}
+      tweet.user.status.text = tweet.text
+      users[user_id] = tweet.user
 
     for friend in @friends
       delete users[friend.data("user_id")]

@@ -91,11 +91,11 @@ if ((_ref = window.maptter) == null) {
             button: "Close"
           },
           text: function(api) {
-            var text;
+            var text, _ref2;
             text = $("<a>").text("@" + friend.screen_name).attr({
               href: "http://twitter.com/#!/" + friend.screen_name,
               target: "_blank"
-            });
+            }).after($("p").text((_ref2 = friend.status) != null ? _ref2.text : void 0));
             if (hasRemoveUI) {
               text = text.after($("<a>").text("アイコンを削除").attr({
                 href: "#"
@@ -349,14 +349,17 @@ if ((_ref = window.maptter) == null) {
       return false;
     },
     updateActiveUser: function(timeline) {
-      var friend, id, tweet, user, users, _i, _j, _len, _len2, _ref2, _results;
+      var friend, id, tweet, user, user_id, users, _i, _j, _len, _len2, _ref2, _results;
       if (timeline == null) {
         timeline = this.allTimeline;
       }
       users = {};
       for (_i = 0, _len = timeline.length; _i < _len; _i++) {
         tweet = timeline[_i];
-        users[tweet.user.id_str] = tweet.user;
+        user_id = tweet.user.id_str;
+        tweet.user.status = {};
+        tweet.user.status.text = tweet.text;
+        users[user_id] = tweet.user;
       }
       _ref2 = this.friends;
       for (_j = 0, _len2 = _ref2.length; _j < _len2; _j++) {
