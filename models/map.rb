@@ -86,11 +86,18 @@ class Map
 
   def remove_member(friend_id)
     index = friends.index{|f| f.id.to_s == friend_id }
+
     unless index
       Model.logger.warn "user not found #{friend_id}"
-      return {:result => false} 
+      return
     end
+    
     friend = friends[index]
+    if friend.user_id == self.user_id
+      Model.logger.warn "cannot remove yourself #{friend_id}"
+      return
+    end
+
     friends.delete_at(index)
     save
     list_api(:remove_member_from_list, friend.user_id)

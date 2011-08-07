@@ -23,14 +23,14 @@ window.maptter ?=
 
     $.get "/map/friends", "", (friends, status) =>
       for friend in friends
-        icon = @makeDraggableIcon friend
+        icon = @makeDraggableIcon friend, @user?
+        @user ?= icon
         $("#map").append icon
         @friends[friend.friend_id] = icon
-        @user = icon if @user == null
       @updateDistances()
       @getTimeline()
 
-  makeDraggableIcon: (friend) ->
+  makeDraggableIcon: (friend, hasRemoveUI = true) ->
     return $("<img>").addClass("icon").data(
         friend_id: friend.friend_id
         user_id: friend.user_id
@@ -60,11 +60,11 @@ window.maptter ?=
             text: friend.name
             button: "Close"
           text: (api) ->
-            return $("<a>").text("@" + friend.screen_name).attr(
+            text = $("<a>").text("@" + friend.screen_name).attr
                 href: "http://twitter.com/#!/"+friend.screen_name
                 target: "_blank"
-              )
-              .after($("<a>").text("アイコンを削除").attr(href: "#").click(=>
+            if hasRemoveUI
+              text = text.after($("<a>").text("アイコンを削除").attr(href: "#").click(=>
                 window.maptter.saveTasks[friend.friend_id] =
                   type: "remove"
                   friend_id: friend.friend_id
@@ -74,6 +74,7 @@ window.maptter ?=
                 $(this).fadeOut('slow')
                 $(this).empty()
               ))
+            return text
         style:
           classes: "ui-tooltip-shadow ui-tooltip-light"
         show:

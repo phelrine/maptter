@@ -37,21 +37,24 @@ if ((_ref = window.maptter) == null) {
         return this.getTimeline();
       }, this)), 20000);
       return $.get("/map/friends", "", __bind(function(friends, status) {
-        var friend, icon, _i, _len;
+        var friend, icon, _i, _len, _ref2;
         for (_i = 0, _len = friends.length; _i < _len; _i++) {
           friend = friends[_i];
-          icon = this.makeDraggableIcon(friend);
-          $("#map").append(icon);
-          this.friends[friend.friend_id] = icon;
-          if (this.user === null) {
+          icon = this.makeDraggableIcon(friend, this.user != null);
+          if ((_ref2 = this.user) == null) {
             this.user = icon;
           }
+          $("#map").append(icon);
+          this.friends[friend.friend_id] = icon;
         }
         this.updateDistances();
         return this.getTimeline();
       }, this));
     },
-    makeDraggableIcon: function(friend) {
+    makeDraggableIcon: function(friend, hasRemoveUI) {
+      if (hasRemoveUI == null) {
+        hasRemoveUI = true;
+      }
       return $("<img>").addClass("icon").data({
         friend_id: friend.friend_id,
         user_id: friend.user_id
@@ -86,22 +89,27 @@ if ((_ref = window.maptter) == null) {
             button: "Close"
           },
           text: function(api) {
-            return $("<a>").text("@" + friend.screen_name).attr({
+            var text;
+            text = $("<a>").text("@" + friend.screen_name).attr({
               href: "http://twitter.com/#!/" + friend.screen_name,
               target: "_blank"
-            }).after($("<a>").text("アイコンを削除").attr({
-              href: "#"
-            }).click(__bind(function() {
-              window.maptter.saveTasks[friend.friend_id] = {
-                type: "remove",
-                friend_id: friend.friend_id
-              };
-              delete window.maptter.friends[friend.friend_id];
-              window.maptter.updateNeighbors();
-              $(".qtip").qtip('hide');
-              $(this).fadeOut('slow');
-              return $(this).empty();
-            }, this)));
+            });
+            if (hasRemoveUI) {
+              text = text.after($("<a>").text("アイコンを削除").attr({
+                href: "#"
+              }).click(__bind(function() {
+                window.maptter.saveTasks[friend.friend_id] = {
+                  type: "remove",
+                  friend_id: friend.friend_id
+                };
+                delete window.maptter.friends[friend.friend_id];
+                window.maptter.updateNeighbors();
+                $(".qtip").qtip('hide');
+                $(this).fadeOut('slow');
+                return $(this).empty();
+              }, this)));
+            }
+            return text;
           }
         },
         style: {
