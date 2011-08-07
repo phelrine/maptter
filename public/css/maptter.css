@@ -283,7 +283,7 @@ div#footerContainer footer div#copy{
     border: 1px solid;
 }
 
-.icon {
+.mapIcon {
     display: block;
 /*    margin: -24px 0px 0px -24px;*/
     position: absolute;
@@ -293,7 +293,7 @@ div#footerContainer footer div#copy{
     box-shadow: 0px 2px 5px 0px #333;
 }
 
-.icon:hover {
+.mapIcon:hover {
     border: red 1px solid;
 }
 

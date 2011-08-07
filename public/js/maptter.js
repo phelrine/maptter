@@ -55,18 +55,16 @@ if ((_ref = window.maptter) == null) {
       if (hasRemoveUI == null) {
         hasRemoveUI = true;
       }
-      return $("<img>").addClass("icon").data({
+      return $("<div>").addClass("mapIcon").attr({
+        id: "user_" + friend.user_id
+      }).data({
         friend_id: friend.friend_id,
         user_id: friend.user_id
-      }).attr({
-        src: friend.profile_image_url,
-        alt: friend.screen_name,
-        title: friend.screen_name
       }).css({
         top: friend.top,
         left: friend.left
       }).draggable({
-        stack: ".icon",
+        stack: ".mapIcon",
         containment: "parent",
         start: __bind(function(event, ui) {
           return $(".qtip").qtip('hide');
@@ -82,6 +80,10 @@ if ((_ref = window.maptter) == null) {
           };
           return this.updateDistances();
         }, this)
+      }).append($("<img>").addClass("icon").attr({
+        src: friend.profile_image_url,
+        alt: friend.screen_name,
+        title: friend.screen_name
       }).qtip({
         content: {
           title: {
@@ -104,7 +106,7 @@ if ((_ref = window.maptter) == null) {
                 };
                 delete window.maptter.friends[friend.friend_id];
                 window.maptter.updateNeighbors();
-                $(".qtip").qtip('hide');
+                $("#ui-tooltip-profile").qtip('hide');
                 $(this).fadeOut('slow');
                 return $(this).empty();
               }, this)));
@@ -113,11 +115,12 @@ if ((_ref = window.maptter) == null) {
           }
         },
         style: {
-          classes: "ui-tooltip-shadow ui-tooltip-light"
+          classes: "ui-tooltip-shadow ui-tooltip-light profile"
         },
         show: {
           solo: true,
-          event: "click"
+          event: "mouseenter",
+          delay: 1000
         },
         hide: {
           event: "click unfocus"
@@ -126,7 +129,7 @@ if ((_ref = window.maptter) == null) {
           my: "bottom left",
           at: "top left"
         }
-      });
+      }));
     },
     saveMap: function() {
       var id, params, value;
@@ -198,6 +201,25 @@ if ((_ref = window.maptter) == null) {
         _results = [];
         for (_i = 0, _len = diff.length; _i < _len; _i++) {
           tweet = diff[_i];
+          $("#user_" + tweet.user.id_str).qtip({
+            content: tweet.text,
+            style: {
+              classes: "ui-tooltip-shadow ui-tooltip-light"
+            },
+            show: {
+              event: false,
+              ready: true,
+              effect: function(offset) {
+                var self;
+                self = this;
+                $(this).show();
+                setTimeout((function() {
+                  return $(self).hide();
+                }), 5000);
+                return false;
+              }
+            }
+          });
           _results.push($("div#mapTab .statusList").prepend(this.makeMapTweet(tweet)));
         }
         return _results;
@@ -368,7 +390,7 @@ router({
       });
       $("#timelineTabs").tabs();
       $("#map").droppable({
-        accept: ":not(.icon)",
+        accept: ":not(.mapIcon)",
         drop: function(event, ui) {
           var friend, mapOffset;
           window.maptter.refreshLockCount++;

@@ -31,18 +31,19 @@ window.maptter ?=
       @getTimeline()
 
   makeDraggableIcon: (friend, hasRemoveUI = true) ->
-    return $("<img>").addClass("icon").data(
+    return $("<div>")
+      .addClass("mapIcon")
+      .attr(id: "user_" + friend.user_id)
+      .data(
         friend_id: friend.friend_id
         user_id: friend.user_id
-      ).attr(
-        src: friend.profile_image_url
-        alt: friend.screen_name
-        title: friend.screen_name
-      ).css(
+      )
+      .css(
         top: friend.top
         left: friend.left
-      ).draggable(
-        stack: ".icon"
+      )
+      .draggable(
+        stack: ".mapIcon"
         containment: "parent"
         start: (event, ui) =>
           $(".qtip").qtip('hide')
@@ -54,38 +55,47 @@ window.maptter ?=
             top: ui.position.top
             left: ui.position.left
           @updateDistances()
-      ).qtip(
-        content:
-          title:
-            text: friend.name
-            button: "Close"
-          text: (api) ->
-            text = $("<a>").text("@" + friend.screen_name).attr
+      )
+      .append(
+        $("<img>").addClass("icon").attr(
+          src: friend.profile_image_url
+          alt: friend.screen_name
+          title: friend.screen_name
+        )
+        .qtip(
+          content:
+            title:
+              text: friend.name
+              button: "Close"
+            text: (api) ->
+              text = $("<a>").text("@" + friend.screen_name).attr
                 href: "http://twitter.com/#!/"+friend.screen_name
                 target: "_blank"
-            if hasRemoveUI
-              text = text.after($("<a>").text("アイコンを削除").attr(href: "#").click(=>
-                window.maptter.saveTasks[friend.friend_id] =
-                  type: "remove"
-                  friend_id: friend.friend_id
-                delete window.maptter.friends[friend.friend_id]
-                window.maptter.updateNeighbors()
-                $(".qtip").qtip('hide')
-                $(this).fadeOut('slow')
-                $(this).empty()
-              ))
-            return text
-        style:
-          classes: "ui-tooltip-shadow ui-tooltip-light"
-        show:
-          solo: true
-          event: "click"
-        hide:
-          event: "click unfocus"
-        position:
-          my: "bottom left"
-          at: "top left"
-      )
+              if hasRemoveUI
+                text = text.after(
+                  $("<a>").text("アイコンを削除").attr(href: "#").click =>
+                    window.maptter.saveTasks[friend.friend_id] =
+                      type: "remove"
+                      friend_id: friend.friend_id
+                    delete window.maptter.friends[friend.friend_id]
+                    window.maptter.updateNeighbors()
+                    $("#ui-tooltip-profile").qtip('hide')
+                    $(this).fadeOut('slow')
+                    $(this).empty()
+                )
+              return text
+          style:
+            classes: "ui-tooltip-shadow ui-tooltip-light profile"
+          show:
+            solo: true
+            event: "mouseenter"
+            delay: 1000
+          hide:
+            event: "click unfocus"
+          position:
+            my: "bottom left"
+            at: "top left"
+        ))
 
   saveMap: ->
     return if $(".ui-draggable-dragging").length > 0 or $.isEmptyObject @saveTasks
@@ -124,6 +134,18 @@ window.maptter ?=
       @mapTimeline = $.merge recentMapTimeline, @mapTimeline
       diff.reverse()
       for tweet in diff
+        $("#user_" + tweet.user.id_str).qtip
+          content: tweet.text
+          style:
+            classes: "ui-tooltip-shadow ui-tooltip-light"
+          show:
+            event: false
+            ready: true
+            effect: (offset)->
+              self = this
+              $(this).show()
+              setTimeout((-> $(self).hide()), 5000)
+              return false
         $("div#mapTab .statusList").prepend(@makeMapTweet tweet)
     else
       @mapTimeline = recentMapTimeline
@@ -252,7 +274,7 @@ router({
       $("#timelineTabs").tabs()
 
       $("#map").droppable
-        accept: ":not(.icon)"
+        accept: ":not(.mapIcon)"
         drop: (event, ui) ->
           window.maptter.refreshLockCount++
           ui.helper.draggable(disabled: true).attr(src: "img/loading.gif")
