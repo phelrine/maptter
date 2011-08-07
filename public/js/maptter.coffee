@@ -97,7 +97,7 @@ window.maptter ?=
           show:
             solo: true
             event: "mouseenter"
-            delay: 1000
+            delay: 300
           hide:
             event: "click unfocus"
           position:
