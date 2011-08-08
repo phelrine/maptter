@@ -350,11 +350,11 @@ router({
           widget: true
       )
       $("#tweetPostForm").submit ->
-        $.post "/twitter/update", $("#tweetPostForm").serialize(), (tweet, status) ->
-          $("#tweetPostForm textarea[name=tweet]").val ""
+        $.post "/twitter/update", $("#tweetPostForm").serialize(), (tweet, status)->
           tweetElem = window.maptter.makeTweet(tweet).addClass("tmp")
           $("div#timelineTab .statusList").prepend(tweetElem.clone())
           $("div#mapTab .statusList").prepend(tweetElem)
+        $("#tweetPostForm textarea[name=tweet]").val ""
         return false
 
     $(window).unload ->
