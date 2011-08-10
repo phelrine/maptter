@@ -228,6 +228,9 @@ window.maptter ?=
       params.since = @allTimeline[0].created_at
       params.count = 40
 
+    $(".friendIcon").remove()
+    $(".loading").show()
+
     $.get "twitter/timeline", params, (timeline, status)=>
       @updateActiveUser(timeline)
       if @allTimeline.length == 0
@@ -245,6 +248,7 @@ window.maptter ?=
       diffTimeline.reverse()
       for tweet in diffTimeline
         $("div#timelineTab .statusList").prepend(@makeTweet tweet)
+      $(".loading").hide()
     false
 
   updateActiveUser: (timeline = @allTimeline)->
@@ -259,10 +263,10 @@ window.maptter ?=
     for friend in @friends
       delete users[friend.data("user_id")]
 
-    $("#friendsList").empty()
+
     for id, user of users
       $("#friendsList").append(
-        $("<img>").draggable(
+        $("<img>").addClass("friendIcon").draggable(
           revert: "invalid"
           opacity: 0.5
         )

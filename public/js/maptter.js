@@ -325,8 +325,10 @@ if ((_ref = window.maptter) == null) {
         params.since = this.allTimeline[0].created_at;
         params.count = 40;
       }
+      $(".friendIcon").remove();
+      $(".loading").show();
       $.get("twitter/timeline", params, __bind(function(timeline, status) {
-        var latestID, latestTimeline, tweet, _i, _j, _len, _len2, _results;
+        var latestID, latestTimeline, tweet, _i, _j, _len, _len2;
         this.updateActiveUser(timeline);
         if (this.allTimeline.length === 0) {
           diffTimeline = timeline;
@@ -347,12 +349,11 @@ if ((_ref = window.maptter) == null) {
         this.allTimeline = $.merge(latestTimeline, this.allTimeline);
         this.updateMapTimeline(diffTimeline, true);
         diffTimeline.reverse();
-        _results = [];
         for (_j = 0, _len2 = diffTimeline.length; _j < _len2; _j++) {
           tweet = diffTimeline[_j];
-          _results.push($("div#timelineTab .statusList").prepend(this.makeTweet(tweet)));
+          $("div#timelineTab .statusList").prepend(this.makeTweet(tweet));
         }
-        return _results;
+        return $(".loading").hide();
       }, this));
       return false;
     },
@@ -374,11 +375,10 @@ if ((_ref = window.maptter) == null) {
         friend = _ref2[_j];
         delete users[friend.data("user_id")];
       }
-      $("#friendsList").empty();
       _results = [];
       for (id in users) {
         user = users[id];
-        _results.push($("#friendsList").append($("<img>").draggable({
+        _results.push($("#friendsList").append($("<img>").addClass("friendIcon").draggable({
           revert: "invalid",
           opacity: 0.5
         }).data({
