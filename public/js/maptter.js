@@ -257,9 +257,10 @@ if ((_ref = window.maptter) == null) {
       }
     },
     makeTweet: function(tweet) {
-      return $("<li>").addClass("status").append($("<div>").addClass("image").append($("<img>").attr({
+      var dom;
+      dom = $("<li>").addClass("status").append($("<div>").addClass("image").append($("<img>").attr({
         src: tweet.user.profile_image_url
-      }))).append($("<div>").addClass("content").append($("<span>").text(tweet.user.screen_name).addClass("screenname")).append($("<span>").text(tweet.user.name).addClass("name")).append($("<div>").text(tweet.text).addClass("text")).append($("<div>").addClass("tool").append($("<a>").addClass("timestamp").attr({
+      }))).append($("<div>").addClass("content").append($("<span>").text(tweet.user.screen_name).addClass("screenname")).append($("<span>").text(tweet.user.name).addClass("name")).append($("<div>").addClass("text").html(twttr.txt.autoLink(tweet.text))).append($("<div>").addClass("tool").append($("<a>").addClass("timestamp").attr({
         href: "http://twitter.com/#!/" + tweet.user.screen_name + "/status/" + tweet.id_str,
         target: "_blank",
         title: new Date(tweet.created_at)
@@ -278,6 +279,10 @@ if ((_ref = window.maptter) == null) {
           visibility: "hidden"
         });
       }));
+      dom.find(".text a").attr({
+        target: "_blank"
+      });
+      return dom;
     },
     makeFavoriteElement: function(tweet) {
       var fav;
@@ -483,11 +488,11 @@ router({
       return $("#tweetPostForm").submit(function() {
         $.post("/twitter/update", $("#tweetPostForm").serialize(), function(tweet, status) {
           var tweetElem;
-          $("#tweetPostForm textarea[name=tweet]").val("");
           tweetElem = window.maptter.makeTweet(tweet).addClass("tmp");
           $("div#timelineTab .statusList").prepend(tweetElem.clone());
           return $("div#mapTab .statusList").prepend(tweetElem);
         });
+        $("#tweetPostForm textarea[name=tweet]").val("");
         return false;
       });
     });

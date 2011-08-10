@@ -177,12 +177,12 @@ window.maptter ?=
         ).append($("<div>").addClass("clear"))
 
   makeTweet: (tweet) ->
-    $("<li>").addClass("status")
+    dom = $("<li>").addClass("status")
       .append($("<div>").addClass("image").append($("<img>").attr(src: tweet.user.profile_image_url)))
       .append($("<div>").addClass("content")
         .append($("<span>").text(tweet.user.screen_name).addClass("screenname"))
         .append($("<span>").text(tweet.user.name).addClass("name"))
-        .append($("<div>").text(tweet.text).addClass("text"))
+        .append($("<div>").addClass("text").html(twttr.txt.autoLink(tweet.text)))
         .append($("<div>").addClass("tool")
           .append($("<a>").addClass("timestamp").attr(
               href: "http://twitter.com/#!/" + tweet.user.screen_name + "/status/" + tweet.id_str
@@ -198,6 +198,8 @@ window.maptter ?=
           .append(@makeFavoriteElement(tweet))
         ))
       .hover((-> $(this).find("div.tool").css(visibility: "visible")), (-> $(this).find("div.tool").css(visibility: "hidden")))
+    dom.find(".text a").attr(target: "_blank")
+    dom
 
   makeFavoriteElement: (tweet) ->
     fav = $("<a>").attr(href: "#").text("favorite").addClass("favorite")
