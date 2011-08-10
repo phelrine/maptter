@@ -159,7 +159,7 @@ input.toggleButton:hover{
 
 div#map{
     background: rgba(255, 255, 255, 0.7);
-    height: 95%;
+    height: 660px;
     margin: 10px 0px;
     position: relative;
     text-align: center;

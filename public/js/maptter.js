@@ -62,8 +62,8 @@ if ((_ref = window.maptter) == null) {
         user_id: friend.user_id
       }).css({
         position: "absolute",
-        top: friend.top,
-        left: friend.left
+        top: friend.top + "px",
+        left: friend.left + "px"
       }).draggable({
         stack: ".mapIcon",
         containment: "parent",

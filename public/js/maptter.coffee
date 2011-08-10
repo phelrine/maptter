@@ -40,8 +40,8 @@ window.maptter ?=
       )
       .css(
         position: "absolute"
-        top: friend.top
-        left: friend.left
+        top: friend.top + "px"
+        left: friend.left + "px"
       )
       .draggable(
         stack: ".mapIcon"
