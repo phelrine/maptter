@@ -182,7 +182,9 @@ window.maptter ?=
       .append($("<div>").addClass("content")
         .append($("<span>").text(tweet.user.screen_name).addClass("screenname"))
         .append($("<span>").text(tweet.user.name).addClass("name"))
-        .append($("<div>").addClass("text").html(twttr.txt.autoLink(tweet.text)))
+        .append($("<div>").addClass("text").html(
+          twttr.txt.autoLink(twttr.txt.htmlEscape(tweet.text))
+        ))
         .append($("<div>").addClass("tool")
           .append($("<a>").addClass("timestamp").attr(
               href: "http://twitter.com/#!/" + tweet.user.screen_name + "/status/" + tweet.id_str
