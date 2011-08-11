@@ -435,6 +435,7 @@ router({
         return $("#friendsList").slideToggle("slow", toggleText);
       });
       $("#timelineTabs").tabs();
+      $("#tweetTextarea").charCount();
       $("#map").droppable({
         accept: ":not(.mapIcon)",
         drop: function(event, ui) {

@@ -313,6 +313,8 @@ router({
 
       $("#timelineTabs").tabs()
 
+      $("#tweetTextarea").charCount()
+
       $("#map").droppable
         accept: ":not(.mapIcon)"
         drop: (event, ui) ->
