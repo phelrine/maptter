@@ -116,18 +116,18 @@ div#timelinePane textarea{
 
 div#timelinePane input{
     disply: block;
+    font-size: 14px;
+    font-weight: bold;
     float: right;
     width: 70px;
     margin: 3px 0px 0px 0px;
-    padding: 6px 13px 6px 13px;
+    padding: 6px 13px;
     border: 1px #aaa solid;
     border-radius: 6px;
     color: #fff;
     background: #fff;
     background: -moz-linear-gradient(top, rgb(204,204,204), rgb(153,153,153)); /* Firefox用 */  
     background: -webkit-gradient(linear, left top, left bottom, from(#ccc), to(#999));
-    font-size: 14px;
-    font-weight: bold;
 }
 
 div#timelinePane input:hover{
@@ -373,6 +373,37 @@ div#footerContainer footer h3{
 div#footerContainer footer div#copy{
     text-align: right;
     padding-bottom: 5px;
+}
+
+
+/* ------------------------------------- */
+/* Index                                 */
+/* ------------------------------------- */
+
+div#index{
+    padding: 8px;
+}
+
+div#index h2{
+    font-size: xx-large;
+    display: block;
+}
+
+div#index h3{
+    font-size: x-large;
+    margin: 0.5em 0 0.2em 0;
+}
+
+div#index ul, ol{
+    margin: 0.5em 0 0.5em 2em;
+}
+
+div#index p{
+    margin-bottom: 0.2em;
+}
+
+div#index strong{
+    color: #a00;
 }
 
 .clear{
