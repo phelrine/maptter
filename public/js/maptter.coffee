@@ -357,7 +357,7 @@ router({
           container: handle
           adjust:
             x: handle.width()/2 - parseInt(slider.css("margin-left"))
-            y: -handle.height()/2 - parseInt(slider.css("margin-top"))
+            y: - parseInt(slider.css("margin-top"))
         hide:
           delay: 1000
         style:
