@@ -225,24 +225,32 @@ li.status div.content div.tool{
     visibility: hidden;
 }
 
+li.status div.content div.tool a.reply{
+    padding-left: 18px;
+    background-image: url("./images/reply.png");
+    background-repeat: no-repeat;
+    background-position: left center;
+}
+
 li.status div.content div.tool a:after{
     content: " ";
 }
 
 li.iconOnly{
-    display: inline;
-    padding: 0;
+    display: inline-block;
+    border-width: 0px;
+    margin: 0px;
+    padding: 0px;
+}
+
+li.iconOnly:hover{
+    background: transparent;
 }
 
 li.iconOnly img{
     width: 24px;
     height: 24px;
     padding: 1px;
-}
-
-li.iconOnly div.content{
-    padding: 1px;
-    text-align: center;
 }
 
 li.iconOnly div.content span{
