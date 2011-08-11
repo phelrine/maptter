@@ -200,18 +200,26 @@ window.maptter ?=
     dom
 
   makeFavoriteElement: (tweet) ->
-    fav = $("<a>").attr(href: "#").text("favorite").addClass("favorite")
-    fav.addClass("favorited") if tweet.favorited
+    fav = $("<a>").attr(href: "#").addClass("favorite")
+    if tweet.favorited
+      fav.addClass("favorited")
+      fav.text "★"
+    else
+      fav.text "☆"
+
     fav.click(->
       api = if $(this).hasClass("favorited") then "delete" else "create"
+      if api == "create"
+        fav.addClass "favorited"
+        fav.text "★"
+      else
+        fav.removeClass "favorited"
+        fav.text "☆"
+
       $.post "/twitter/favorite/" + api,
         tweet_id: tweet.id_str
         token: $("#token").val(),
          (response, status)->
-          if api == "create"
-            fav.addClass("favorited")
-          else
-            fav.removeClass("favorited")
           return false
     )
     return fav

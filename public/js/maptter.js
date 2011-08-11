@@ -19,9 +19,7 @@ router = function() {
     }
   }
 };
-if ((_ref = window.maptter) != null) {
-  _ref;
-} else {
+if ((_ref = window.maptter) == null) {
   window.maptter = {
     user: null,
     friends: [],
@@ -43,11 +41,9 @@ if ((_ref = window.maptter) != null) {
         for (_i = 0, _len = friends.length; _i < _len; _i++) {
           friend = friends[_i];
           icon = this.makeDraggableIcon(friend, this.user != null);
-                    if ((_ref2 = this.user) != null) {
-            _ref2;
-          } else {
+          if ((_ref2 = this.user) == null) {
             this.user = icon;
-          };
+          }
           $("#map").append(icon);
           this.friends.push(icon);
         }
@@ -179,11 +175,9 @@ if ((_ref = window.maptter) != null) {
         squaredTop = square(parseFloat(this.user.css("top")) - parseFloat(friend.css("top")));
         squaredLeft = square(parseFloat(this.user.css("left")) - parseFloat(friend.css("left")));
         distance = Math.sqrt(squaredTop + squaredLeft);
-                if ((_ref3 = (_base = this.distances)[user_id]) != null) {
-          _ref3;
-        } else {
+        if ((_ref3 = (_base = this.distances)[user_id]) == null) {
           _base[user_id] = distance;
-        };
+        }
         if (distance < this.distances[user_id]) {
           this.distances[user_id] = distance;
         }
@@ -298,22 +292,27 @@ if ((_ref = window.maptter) != null) {
       var fav;
       fav = $("<a>").attr({
         href: "#"
-      }).text("favorite").addClass("favorite");
+      }).addClass("favorite");
       if (tweet.favorited) {
         fav.addClass("favorited");
+        fav.text("★");
+      } else {
+        fav.text("☆");
       }
       fav.click(function() {
         var api;
         api = $(this).hasClass("favorited") ? "delete" : "create";
+        if (api === "create") {
+          fav.addClass("favorited");
+          fav.text("★");
+        } else {
+          fav.removeClass("favorited");
+          fav.text("☆");
+        }
         return $.post("/twitter/favorite/" + api, {
           tweet_id: tweet.id_str,
           token: $("#token").val()
         }, function(response, status) {
-          if (api === "create") {
-            fav.addClass("favorited");
-          } else {
-            fav.removeClass("favorited");
-          }
           return false;
         });
       });
@@ -408,12 +407,12 @@ if ((_ref = window.maptter) != null) {
       return _results;
     }
   };
-};
+}
 router({
   path: "/",
   func: function() {
     $(document).ready(function() {
-      var handle;
+      var handle, slider;
       window.maptter.initFriendsMap();
       $("#addFriendButton").click(function() {
         return $("#friendsList").slideToggle("slow");
