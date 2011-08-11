@@ -96,7 +96,11 @@ if ((_ref = window.maptter) == null) {
             text = $("<a>").text("@" + friend.screen_name).attr({
               href: "http://twitter.com/#!/" + friend.screen_name,
               target: "_blank"
-            }).after($("p").text((_ref2 = friend.status) != null ? _ref2.text : void 0));
+            }).after($("<p>").text((_ref2 = friend.status) != null ? _ref2.text : void 0)).after($("<a>").text("返信").attr({
+              href: "#tweetTextarea"
+            }).click(function() {
+              return $("#tweetTextarea").text("@" + friend.screen_name);
+            }));
             if (hasRemoveUI) {
               text = text.after($("<a>").text("アイコンを削除").attr({
                 href: "#"

@@ -74,7 +74,8 @@ window.maptter ?=
                   href: "http://twitter.com/#!/"+friend.screen_name
                   target: "_blank"
                 )
-                .after($("p").text(friend.status?.text))
+                .after($("<p>").text(friend.status?.text))
+                .after($("<a>").text("返信").attr(href: "#tweetTextarea").click(-> $("#tweetTextarea").text("@" + friend.screen_name)))
               if hasRemoveUI
                 text = text.after(
                   $("<a>").text("アイコンを削除").attr(href: "#").click =>
