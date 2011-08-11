@@ -462,7 +462,7 @@ router({
       handle = null;
       $("#rangeSlider").slider({
         orientation: "vertical",
-        range: "max",
+        range: "min",
         min: 100,
         max: 400,
         value: window.maptter.neighborLength,
