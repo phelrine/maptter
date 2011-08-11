@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Maptter</title>
+    <title>maptter</title>
     <link rel="icon" href="maptter.ico"/>
     <link rel="stylesheet" href="css/maptter.css" type="text/css" media="screen" />
     <link rel="stylesheet" href="css/jquery-ui-1.8.14.custom.css" type="text/css" media="screen" />
@@ -16,12 +16,12 @@
   <body>
     <div id="headerContainer">
       <header>
-        <h1><a href="/">Maptter</a></h1>
+        <h1><a href="/">maptter</a></h1>
         <ul>
           <% if login? %>
-          <li>Tweet</li><li><a href="/logout">ログアウト</a></li>
+          <li><a href="/logout">ログアウト</a></li>
           <% else %>
-          <li>ログイン</li>
+          <li><a href="/oauth">ログイン</a></li>
           <% end %>
         </ul>
       </header>
@@ -30,9 +30,8 @@
     <div class="clear"></div>
     <div id="footerContainer">
       <footer>
-        <h2>Footer</h2>
-        <h3>maptter</h3>
-        <h3>使い方</h3>
+        <h2>maptterとは</h2>
+        <h2>使い方</h2>
         <div id="copy">&copy; maptter 2011.</div>
       </footer>
     <div id="footerContainer">
