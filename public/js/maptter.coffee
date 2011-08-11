@@ -122,18 +122,22 @@ window.maptter ?=
     @distances = {}
     for friend in @friends
       user_id = friend.data "user_id"
-      squaredTop = square(parseFloat(@user.css "top") - parseFloat(friend.css "top"))
-      squaredLeft = square(parseFloat(@user.css "left") - parseFloat(friend.css "left"))
-      distance = Math.sqrt(squaredTop + squaredLeft)
+      distance = @calcDistance(friend)
       @distances[user_id] ?= distance
       @distances[user_id] = distance if distance < @distances[user_id]
       distance = @distances[user_id]
       if distance < @neighborLength
-        friend.css "opacity", 1
+        friend.css(opacity: 1)
       else
-        friend.css "opacity", 0.5
+        friend.css(opacity: 0.5)
 
     @updateMapTimeline(@allTimeline)
+
+  calcDistance: (friend) ->
+    user_id = friend.data "user_id"
+    squaredTop = square(parseFloat(@user.css "top") - parseFloat(friend.css "top"))
+    squaredLeft = square(parseFloat(@user.css "left") - parseFloat(friend.css "left"))
+    return Math.sqrt(squaredTop + squaredLeft)
 
   updateMapTimeline: (timeline, merge = false)->
     recentMapTimeline = for tweet in timeline
@@ -269,7 +273,6 @@ window.maptter ?=
     for friend in @friends
       delete users[friend.data("user_id")]
 
-
     for id, user of users
       $("#friendsList").append(
         $("<img>").addClass("friendIcon").draggable(
@@ -324,11 +327,10 @@ router({
             success: (data, status) ->
               window.maptter.refreshLockCount--
               $.extend(friend, data)
-              icon = window.maptter.makeDraggableIcon(friend).hide()
+              icon = window.maptter.makeDraggableIcon(friend)
               $("#map").append icon
               window.maptter.friends.push icon
               ui.helper.remove()
-              icon.fadeIn 'slow'
               window.maptter.updateDistances()
           }
 
