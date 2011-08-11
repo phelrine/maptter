@@ -426,6 +426,9 @@ router({
       $("#addFriendButton").click(function() {
         return $("#friendsList").slideToggle("slow");
       });
+      $("#friendsList").click(function() {
+        return $("#friendsList").slideToggle("slow");
+      });
       $("#timelineTabs").tabs();
       $("#map").droppable({
         accept: ":not(.mapIcon)",

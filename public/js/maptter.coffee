@@ -303,6 +303,9 @@ router({
       $("#addFriendButton").click ->
         $("#friendsList").slideToggle("slow")
 
+      $("#friendsList").click ->
+        $("#friendsList").slideToggle("slow")
+
       $("#timelineTabs").tabs()
 
       $("#map").droppable
