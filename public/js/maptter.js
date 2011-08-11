@@ -257,7 +257,7 @@ if ((_ref = window.maptter) == null) {
       } else {
         return $("<li>").addClass("status iconOnly").append($("<img>").attr({
           src: tweet.user.profile_image_url
-        }).after($("<div>").addClass("content").append($("<span>").text(tweet.user.screen_name + " がツイートしました")))).append($("<div>").addClass("clear"));
+        }));
       }
     },
     makeTweet: function(tweet) {

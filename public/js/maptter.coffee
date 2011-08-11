@@ -170,12 +170,7 @@ window.maptter ?=
     return if length < 0 or length < @neighborLength
         @makeTweet(tweet)
       else
-        $("<li>").addClass("status iconOnly").append(
-          $("<img>").attr(src: tweet.user.profile_image_url)
-            .after($("<div>").addClass("content")
-              .append($("<span>").text(tweet.user.screen_name +
-                " がツイートしました")))
-        ).append($("<div>").addClass("clear"))
+        $("<li>").addClass("status iconOnly").append($("<img>").attr(src: tweet.user.profile_image_url))
 
   makeTweet: (tweet) ->
     dom = $("<li>").addClass("status")
