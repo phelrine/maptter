@@ -333,7 +333,7 @@ router({
           }
 
       handle = null
-      $("#rangeSlider").slider(
+      slider = $("#rangeSlider").slider(
         orientation: "vertical",
         range: "min"
         min: 100
@@ -354,8 +354,8 @@ router({
           at: 'right center',
           container: handle
           adjust:
-            x: handle.width()/2
-            y: -handle.height()/2
+            x: handle.width()/2 - parseInt(slider.css("margin-left"))
+            y: -handle.height()/2 - parseInt(slider.css("margin-top"))
         hide:
           delay: 1000
         style:

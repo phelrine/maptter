@@ -459,7 +459,7 @@ router({
         }
       });
       handle = null;
-      $("#rangeSlider").slider({
+      slider = $("#rangeSlider").slider({
         orientation: "vertical",
         range: "min",
         min: 100,
@@ -473,11 +473,9 @@ router({
           return window.maptter.updateDistances();
         }
       });
-            if (handle != null) {
-        handle;
-      } else {
+      if (handle == null) {
         handle = $(".ui-slider-handle", this);
-      };
+      }
       handle.qtip({
         content: "range",
         position: {
@@ -485,8 +483,8 @@ router({
           at: 'right center',
           container: handle,
           adjust: {
-            x: handle.width() / 2,
-            y: -handle.height() / 2
+            x: handle.width() / 2 - parseInt(slider.css("margin-left")),
+            y: -handle.height() / 2 - parseInt(slider.css("margin-top"))
           }
         },
         hide: {
