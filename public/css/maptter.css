@@ -15,7 +15,7 @@ h2 {
 }
 
 a {  }
-a:visited {  }
+a:visied {  }
 a:hover {  }
 a:active {  }
 
@@ -219,14 +219,22 @@ li.status div.content div.tool{
     margin-top: 3px;
 }
 
-li.status:hover div.content div.text a{
-    color: #fff;
+li.status div.content div.text a{
+    color: #333;
 }
 li.status div.content div.text a:visited{
-    color: #ccc;
+    color: #666;
 }
 li.status div.content div.text a:hover{
     color: #1e90ff;
+}
+
+
+li.status:hover div.content div.text a{
+    color: #fff;
+}
+li.status:hover div.content div.text a:visited{
+    color: #ccc;
 }
 
 li.status div.content div.tool a{
