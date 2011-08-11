@@ -76,44 +76,85 @@ div#main{
     width: 980px;
     height: 700px;
     margin: 1.5% auto;
-}
-div.pane{
-    border: 1px #ccc solid;
+    background: rgba(255,255,255, 0.7);
+    border: 1px #fff solid;
     border-radius: 8px;
     box-shadow: 0px 3px 5px #000;
+
+}
+div.pane{
+
 }
 
 div#timelinePane{
-    background: rgba(0, 0, 0, 0.7);
-    color: white;
-    width: 318px;
-    height: 100%;
-    margin: 0px 10px 0px 0px;
     float: left;
+    color: black;
+    background: rgba(255,255,255, 0.7);
+    border-radius: 8px 0px 0px 8px;
+    width: 320px;
+    height: 100%;
+    padding: 0px 3px;
 }
 
 div#timelinePane form{
     margin: 5px;
 }
 
+div#timelinePane form#tweetPostForm p{
+    font-size: 1.2em;
+    padding-bottom: 3px;
+}
+
 div#timelinePane textarea{
     display: block;
-    width: 98%;
+    width: 99.5%;
     height: 70px;
-    margin: 3px auto;
+    padding: 0px;
+    font-size: normal;
+    resize: none;
+}
+
+div#timelinePane input{
+    disply: block;
+    float: right;
+    width: 70px;
+    margin: 3px 0px 0px 0px;
+    padding: 6px 13px;
+    border: 1px #aaa solid;
+    border-radius: 6px;
+    color: #fff;
+    background: -moz-linear-gradient(top, rgb(204,204,204), rgb(153,153,153));　/* Firefox用 */  
+    font-size: 14px;
+    font-weight: bold;
+}
+
+div#timelinePane input:hover{
+    border-color: rgb(112,198,254) rgb(0, 104, 240) rgb(0, 44, 149) rgb(0, 104, 240);
+    background: -moz-linear-gradient(top, rgb(0,79,255), rgb(0,150,255));　/* Firefox用 */  
+    font-weight: bold;
 }
 
 div#timelineTabs{
+
     display: block;
-    width: 95%;
-    height: 560px;
-    margin: 1px auto;
+    margin: 0px auto 0px auto;
+    background: transparent;
+    border: 0px;
 }
 
 div#timelinePane .tab{
-    max-height: 480px;
-    padding: 5px;
+    height: 540px;
+    background: #fff;
+    padding: 6px;
     overflow: auto;
+    border: 1px #aaa solid;
+    border-radius: 4px;
+}
+
+div#timelinePane ul.ui-tabs-nav{
+    border: 0px;
+    background: transparent;
+    padding-left: 10px;
 }
 
 div#mapContainer{
@@ -169,11 +210,12 @@ div#map{
 }
 
 div#map strong{
-    font-size: 2em;
     display: none;
     position: absolute;
     top: 10px;
     left: 200px;
+    font-size: 2em;
+    font-weight: bold;
 }
 
 div#map.addFriend{
@@ -224,7 +266,7 @@ li.status div.content span.name{
 
 li.status div.content div.text{
     margin: 5px 5px 0px 3px;
-    text-align: justify;
+
     word-wrap: break-word;
     word-break: break-all;
 }
@@ -321,10 +363,6 @@ div#footerContainer footer div#copy{
     border-radius: 5px;
 }
 
-.mapIcon img{
-    border-radius: 4px;
-}
-
 .mapIcon:hover {
     border: red 1px solid;
 }
@@ -332,6 +370,7 @@ div#footerContainer footer div#copy{
 .mapIcon img{
     width: 48px;
     height: 48px;
+    border-radius: 4px;
 }
 
 #rangeSlider {
