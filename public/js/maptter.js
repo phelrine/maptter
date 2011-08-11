@@ -455,7 +455,8 @@ router({
       });
       handle = null;
       $("#rangeSlider").slider({
-        range: "min",
+        orientation: "vertical",
+        range: "max",
         min: 100,
         max: 400,
         value: window.maptter.neighborLength,
@@ -473,8 +474,8 @@ router({
       handle.qtip({
         content: "range",
         position: {
-          my: 'bottom center',
-          at: 'top center',
+          my: 'left center',
+          at: 'right center',
           container: handle,
           adjust: {
             x: handle.width() / 2,
