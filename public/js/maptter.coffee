@@ -192,9 +192,9 @@ window.maptter ?=
               title: new Date(tweet.created_at)
             ).timeago()
           )
-          .append($("<a>").attr(href: "#").text("reply").addClass("reply").click(->
+          .append($("<a>").attr(href: "#tweetTextarea").text("reply").addClass("reply").click(->
             $("#tweetPostForm input[name=in_reply_to_status_id]").val(tweet.id_str)
-            $("#tweetPostForm textarea[name=tweet]").val("@" + tweet.user.screen_name + " ")
+            $("#tweetPostForm textarea[name=tweet]").val("@" + tweet.user.screen_name + " ").focus()
             return false
           ))
           .append(@makeFavoriteElement(tweet))

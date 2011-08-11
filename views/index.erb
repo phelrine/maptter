@@ -5,7 +5,7 @@
     <form id="tweetPostForm">
       <label>
 	<p>what are you doing?</p>
-	<textarea name="tweet"></textarea>
+	<textarea id="tweetTextarea" name="tweet"></textarea>
       </label>
       <input type="hidden" name="in_reply_to_status_id" value="" />
       <input type="hidden" id="token" name="token" value="<%= current_user.token%>">

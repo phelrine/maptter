@@ -265,10 +265,10 @@ if ((_ref = window.maptter) == null) {
         target: "_blank",
         title: new Date(tweet.created_at)
       }).timeago()).append($("<a>").attr({
-        href: "#"
+        href: "#tweetTextarea"
       }).text("reply").addClass("reply").click(function() {
         $("#tweetPostForm input[name=in_reply_to_status_id]").val(tweet.id_str);
-        $("#tweetPostForm textarea[name=tweet]").val("@" + tweet.user.screen_name + " ");
+        $("#tweetPostForm textarea[name=tweet]").val("@" + tweet.user.screen_name + " ").focus();
         return false;
       })).append(this.makeFavoriteElement(tweet)))).hover((function() {
         return $(this).find("div.tool").css({
