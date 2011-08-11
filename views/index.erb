@@ -4,12 +4,12 @@
   <div id="timelinePane" class="pane">
     <form id="tweetPostForm">
       <label>
-	<p>what are you doing?</p>
+	<p>いまどうしてる?</p>
 	<textarea id="tweetTextarea" name="tweet"></textarea>
       </label>
       <input type="hidden" name="in_reply_to_status_id" value="" />
       <input type="hidden" id="token" name="token" value="<%= current_user.token%>">
-      <input type="submit" value="tweet"/>
+      <input type="submit" value="ツイート"/>
     </form>
     <div id="timelineTabs">
       <ul>
@@ -31,14 +31,14 @@
   <div id="mapContainer">
     <div id="friendsPane" class="pane">
       <header>
-	<input type="button" id="addFriendButton" class="toggleButton" value="Add Friends" />
+	<input type="button" id="addFriendButton" class="toggleButton" value="クリックして友達を表示" />
       </header>
       <ul id="friendsList">
 	<img src="img/loading.gif" class="loading">
       </ul>
     </div>
     <div id="map" class="pane">
-      <strong>ここへドラッグ</strong>
+      <strong>ドラッグして配置</strong>
       <div id="rangeSlider"></div>
     </div>
   </div>
