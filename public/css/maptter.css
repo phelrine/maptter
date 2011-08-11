@@ -144,9 +144,9 @@ div#timelineTabs{
 }
 
 div#timelinePane .tab{
-    height: 540px;
-    background: #fff;
-    padding: 6px;
+    height: 550px;
+    background: url(./images/Fabric-12.png);
+    padding: 0px;
     overflow: auto;
     border: 1px #aaa solid;
     border-radius: 4px;
@@ -160,12 +160,16 @@ div#timelinePane ul.ui-tabs-nav{
 
 li.status{
     display: block;
-    padding: 3px;
+    color: #000;
+    background: -moz-linear-gradient(top, rgb(250,240,240), rgb(210,210,210));/* Firefox用 */  
+    padding: 5px 9px 3px 9px;
     vertical-align: middle;
+    box-shadow: 0px 3px 5px #000;
 }
 
 li.status:hover{
-    background: rgba(12, 21, 223, 0.4);
+    color: #fff;
+    background: -moz-linear-gradient(top, rgb(60,60,60), rgb(102,102,102));/* Firefox用 */  
 }
 
 li.status div.image{
@@ -198,7 +202,6 @@ li.status div.content span.name{
 
 li.status div.content div.text{
     margin: 5px 5px 0px 3px;
-
     word-wrap: break-word;
     word-break: break-all;
 }
@@ -210,16 +213,34 @@ li.status div.content div.tool{
     margin-top: 3px;
 }
 
+li.status:hover div.content div.text a{
+    color: #fff;
+}
+li.status div.content div.text a:visited{
+    color: #ccc;
+}
+li.status div.content div.text a:hover{
+    color: #1e90ff;
+}
+
 li.status div.content div.tool a{
+    color: #fff;
     padding: 0 0.3em;
-    border: 0px #666 solid;
+    border: 0px #ccc solid;
     border-width: 0px 1px 0px 0px;
+    text-decoration: none;
 }
 
 li.status div.content div.tool a:last-child{
     padding-right: 0;
     border-width: 0px;
 }
+
+
+li.status div.content div.tool a:hover{
+    color: #1e90ff;
+}
+
 
 li.status div.content div.tool a.reply{
     display: inline-blcok;
@@ -229,7 +250,9 @@ li.iconOnly{
     display: inline-block;
     border-width: 0px;
     margin: 0px;
-    padding: 0px;
+    padding: 5px 0px 3px 9px;
+    background: transparent;
+    box-shadow: none;
 }
 
 li.iconOnly:hover{
@@ -239,7 +262,6 @@ li.iconOnly:hover{
 li.iconOnly img{
     width: 24px;
     height: 24px;
-    padding: 1px;
 }
 
 li.iconOnly div.content span{
