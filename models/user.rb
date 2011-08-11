@@ -31,7 +31,7 @@ class User
     map = Map.new({:list_id => list[:id_str]})
     maps.push(map)
     save
-    map.add_member({:user_id => user_id, :top => 0.5, :left => 0.5})
+    map.add_member({:user_id => user_id, :top => 280, :left => 325})
     Model.logger.info "CREATE_MAP: #{list[:full_name]}(#{list[:id_str]})"
     map
   end
