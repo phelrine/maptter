@@ -166,15 +166,13 @@ if ((_ref = window.maptter) == null) {
       });
     },
     updateDistances: function() {
-      var distance, friend, squaredLeft, squaredTop, user_id, _base, _i, _len, _ref2, _ref3;
+      var distance, friend, user_id, _base, _i, _len, _ref2, _ref3;
       this.distances = {};
       _ref2 = this.friends;
       for (_i = 0, _len = _ref2.length; _i < _len; _i++) {
         friend = _ref2[_i];
         user_id = friend.data("user_id");
-        squaredTop = square(parseFloat(this.user.css("top")) - parseFloat(friend.css("top")));
-        squaredLeft = square(parseFloat(this.user.css("left")) - parseFloat(friend.css("left")));
-        distance = Math.sqrt(squaredTop + squaredLeft);
+        distance = this.calcDistance(friend);
         if ((_ref3 = (_base = this.distances)[user_id]) == null) {
           _base[user_id] = distance;
         }
@@ -183,12 +181,23 @@ if ((_ref = window.maptter) == null) {
         }
         distance = this.distances[user_id];
         if (distance < this.neighborLength) {
-          friend.css("opacity", 1);
+          friend.css({
+            opacity: 1
+          });
         } else {
-          friend.css("opacity", 0.5);
+          friend.css({
+            opacity: 0.5
+          });
         }
       }
       return this.updateMapTimeline(this.allTimeline);
+    },
+    calcDistance: function(friend) {
+      var squaredLeft, squaredTop, user_id;
+      user_id = friend.data("user_id");
+      squaredTop = square(parseFloat(this.user.css("top")) - parseFloat(friend.css("top")));
+      squaredLeft = square(parseFloat(this.user.css("left")) - parseFloat(friend.css("left")));
+      return Math.sqrt(squaredTop + squaredLeft);
     },
     updateMapTimeline: function(timeline, merge) {
       var diff, recentMapTimeline, tweet, _i, _j, _len, _len2, _ref2, _results, _results2;
@@ -448,11 +457,10 @@ router({
               var icon;
               window.maptter.refreshLockCount--;
               $.extend(friend, data);
-              icon = window.maptter.makeDraggableIcon(friend).hide();
+              icon = window.maptter.makeDraggableIcon(friend);
               $("#map").append(icon);
               window.maptter.friends.push(icon);
               ui.helper.remove();
-              icon.fadeIn('slow');
               return window.maptter.updateDistances();
             }
           });
