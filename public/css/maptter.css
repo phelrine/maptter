@@ -375,6 +375,23 @@ div#footerContainer footer div#copy{
     padding-bottom: 5px;
 }
 
+div#footerContainer footer div#member{
+    text-align: right;
+    padding-bottom: 5px;
+}
+
+div#footerContainer footer div#member a{  
+    color: #fff;
+}
+
+div#footerContainer footer div#member a:visited{
+    color: #fff;
+}
+
+div#footerContainer footer div#member a:hover{  
+    color: #fff;
+}
+
 .clear{
     clear: both;
 }
