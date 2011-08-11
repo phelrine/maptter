@@ -96,13 +96,13 @@ if ((_ref = window.maptter) == null) {
             text = $("<a>").text("@" + friend.screen_name).attr({
               href: "http://twitter.com/#!/" + friend.screen_name,
               target: "_blank"
-            }).after($("<p>").text((_ref2 = friend.status) != null ? _ref2.text : void 0)).after($("<a>").text("返信").attr({
-              href: "#tweetTextarea"
-            }).click(function() {
-              return $("#tweetTextarea").text("@" + friend.screen_name);
-            }));
+            }).after($("<p>").text((_ref2 = friend.status) != null ? _ref2.text : void 0));
             if (hasRemoveUI) {
-              text = text.after($("<a>").text("アイコンを削除").attr({
+              text = text.after($("<div>").addClass("footerTools").append($("<a>").attr({
+                href: "#tweetTextarea"
+              }).click(function() {
+                return $("#tweetTextarea").text("@" + friend.screen_name);
+              }).prepend($("<span>").addClass("ui-icon ui-icon-arrowreturnthick-1-w"))).append($("<a>").attr({
                 href: "#"
               }).click(__bind(function() {
                 var parent, self;
@@ -122,7 +122,7 @@ if ((_ref = window.maptter) == null) {
                 parent = $(this).parent();
                 parent.fadeOut('slow');
                 return parent.empty();
-              }, this)));
+              }, this)).prepend($("<span>").addClass("ui-icon ui-icon-trash"))));
             }
             return text;
           }

@@ -409,6 +409,11 @@ span.ui-icon{
     vertical-align: middle;
 }
 
+span.ui-icon-trash{
+    display: inline-block;
+    vertical-align: top;
+}
+
 form .counter{
     position:absolute;
     right:0;
@@ -424,4 +429,8 @@ form .warning{
 
 form .exceeded{
     color:#e00;
+}
+
+div.footerTools{
+    text-align: right;
 }

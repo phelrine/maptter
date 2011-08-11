@@ -75,25 +75,33 @@ window.maptter ?=
                   target: "_blank"
                 )
                 .after($("<p>").text(friend.status?.text))
-                .after($("<a>").text("返信").attr(href: "#tweetTextarea").click(-> $("#tweetTextarea").text("@" + friend.screen_name)))
+
               if hasRemoveUI
                 text = text.after(
-                  $("<a>").text("アイコンを削除").attr(href: "#").click =>
-                    self = window.maptter
-                    self.saveTasks[friend.friend_id] =
-                      type: "remove"
-                      friend_id: friend.friend_id
-                    $.each self.friends, (index, elem) ->
-                      if $(elem).data("friend_id") == friend.friend_id
-                        self.friends.splice(index, 1)
-                        return false
-                    self.updateDistances()
-                    $("#ui-tooltip-profile").qtip('hide')
-                    parent = $(this).parent()
-                    parent.fadeOut('slow')
-                    parent.empty()
+                  $("<div>").addClass("footerTools")
+                    .append($("<a>")
+                      .attr(href: "#tweetTextarea")
+                      .click(-> $("#tweetTextarea").text("@" + friend.screen_name))
+                      .prepend($("<span>").addClass("ui-icon ui-icon-arrowreturnthick-1-w")))
+                    .append($("<a>")
+                      .attr(href: "#").click(=>
+                        self = window.maptter
+                        self.saveTasks[friend.friend_id] =
+                          type: "remove"
+                          friend_id: friend.friend_id
+                        $.each self.friends, (index, elem) ->
+                          if $(elem).data("friend_id") == friend.friend_id
+                            self.friends.splice(index, 1)
+                            return false
+                        self.updateDistances()
+                        $("#ui-tooltip-profile").qtip('hide')
+                        parent = $(this).parent()
+                        parent.fadeOut('slow')
+                        parent.empty()
+                      ).prepend($("<span>").addClass("ui-icon ui-icon-trash")))
                 )
               return text
+
           style:
             classes: "ui-tooltip-shadow ui-tooltip-light profile"
           show:
