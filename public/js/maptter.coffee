@@ -300,11 +300,16 @@ router({
     $(document).ready ->
       window.maptter.initFriendsMap()
 
+      toggleText = ->
+        list = $("#friendsList")
+        $("#addFriendButton").val(if list.css("display") == "none" then "クリックして友達を表示" else "閉じる")
+
+
       $("#addFriendButton").click ->
-        $("#friendsList").slideToggle("slow")
+        $("#friendsList").slideToggle("slow", toggleText)
 
       $("#friendsList").click ->
-        $("#friendsList").slideToggle("slow")
+        $("#friendsList").slideToggle("slow", toggleText)
 
       $("#timelineTabs").tabs()
 

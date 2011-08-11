@@ -421,13 +421,18 @@ router({
   path: "/",
   func: function() {
     $(document).ready(function() {
-      var handle, slider;
+      var handle, slider, toggleText;
       window.maptter.initFriendsMap();
+      toggleText = function() {
+        var list;
+        list = $("#friendsList");
+        return $("#addFriendButton").val(list.css("display") === "none" ? "クリックして友達を表示" : "閉じる");
+      };
       $("#addFriendButton").click(function() {
-        return $("#friendsList").slideToggle("slow");
+        return $("#friendsList").slideToggle("slow", toggleText);
       });
       $("#friendsList").click(function() {
-        return $("#friendsList").slideToggle("slow");
+        return $("#friendsList").slideToggle("slow", toggleText);
       });
       $("#timelineTabs").tabs();
       $("#map").droppable({
