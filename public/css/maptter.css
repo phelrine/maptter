@@ -76,7 +76,6 @@ div#main{
     height: 700px;
     margin: 1.5% auto;
 }
-
 div.pane{
     border: 1px #ccc solid;
     border-radius: 8px;
@@ -171,10 +170,16 @@ div#map{
 div#map strong{
     font-size: 2em;
     display: none;
+    position: absolute;
+    left: 200px;
 }
 
 div#map.addFriend{
     background: rgba(255, 255, 255, 0.9);
+}
+
+div#map div#rangeSlider {
+    margin: 25px 0px 0px 10px;
 }
 
 li.status{
