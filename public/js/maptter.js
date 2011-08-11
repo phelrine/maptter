@@ -19,7 +19,9 @@ router = function() {
     }
   }
 };
-if ((_ref = window.maptter) == null) {
+if ((_ref = window.maptter) != null) {
+  _ref;
+} else {
   window.maptter = {
     user: null,
     friends: [],
@@ -41,9 +43,11 @@ if ((_ref = window.maptter) == null) {
         for (_i = 0, _len = friends.length; _i < _len; _i++) {
           friend = friends[_i];
           icon = this.makeDraggableIcon(friend, this.user != null);
-          if ((_ref2 = this.user) == null) {
+                    if ((_ref2 = this.user) != null) {
+            _ref2;
+          } else {
             this.user = icon;
-          }
+          };
           $("#map").append(icon);
           this.friends.push(icon);
         }
@@ -175,9 +179,11 @@ if ((_ref = window.maptter) == null) {
         squaredTop = square(parseFloat(this.user.css("top")) - parseFloat(friend.css("top")));
         squaredLeft = square(parseFloat(this.user.css("left")) - parseFloat(friend.css("left")));
         distance = Math.sqrt(squaredTop + squaredLeft);
-        if ((_ref3 = (_base = this.distances)[user_id]) == null) {
+                if ((_ref3 = (_base = this.distances)[user_id]) != null) {
+          _ref3;
+        } else {
           _base[user_id] = distance;
-        }
+        };
         if (distance < this.distances[user_id]) {
           this.distances[user_id] = distance;
         }
@@ -274,7 +280,7 @@ if ((_ref = window.maptter) == null) {
         $("#tweetPostForm input[name=in_reply_to_status_id]").val(tweet.id_str);
         $("#tweetPostForm textarea[name=tweet]").val("@" + tweet.user.screen_name + " ").focus();
         return false;
-      })).append(this.makeFavoriteElement(tweet)))).hover((function() {
+      }).prepend($("<span>").addClass("ui-icon ui-icon-arrowreturnthick-1-w"))).append(this.makeFavoriteElement(tweet)))).hover((function() {
         return $(this).find("div.tool").css({
           visibility: "visible"
         });
@@ -402,7 +408,7 @@ if ((_ref = window.maptter) == null) {
       return _results;
     }
   };
-}
+};
 router({
   path: "/",
   func: function() {
@@ -468,9 +474,11 @@ router({
           return window.maptter.updateDistances();
         }
       });
-      if (handle == null) {
+            if (handle != null) {
+        handle;
+      } else {
         handle = $(".ui-slider-handle", this);
-      }
+      };
       handle.qtip({
         content: "range",
         position: {

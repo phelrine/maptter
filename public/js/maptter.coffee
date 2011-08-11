@@ -192,7 +192,7 @@ window.maptter ?=
             $("#tweetPostForm input[name=in_reply_to_status_id]").val(tweet.id_str)
             $("#tweetPostForm textarea[name=tweet]").val("@" + tweet.user.screen_name + " ").focus()
             return false
-          ))
+          ).prepend($("<span>").addClass("ui-icon ui-icon-arrowreturnthick-1-w")))
           .append(@makeFavoriteElement(tweet))
         ))
       .hover((-> $(this).find("div.tool").css(visibility: "visible")), (-> $(this).find("div.tool").css(visibility: "hidden")))
