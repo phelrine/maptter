@@ -301,8 +301,13 @@ div#footerContainer footer div#copy{
     width: 48px;
     height: 48px;
     position: absolute;
-    border: 1px solid;
     box-shadow: 0px 2px 5px 0px #333;
+    border: 1px solid #000;
+    border-radius: 5px;
+}
+
+.mapIcon img{
+    border-radius: 4px;
 }
 
 .mapIcon:hover {
