@@ -238,10 +238,12 @@ window.maptter ?=
       params.since = @allTimeline[0].created_at
       params.count = 40
 
-    $(".friendIcon").remove()
-    $(".loading").show()
+    $(".friendIcon").css(visibility: "hidden")
+    $("#addFriendButton").addClass("loading")
 
     $.get "twitter/timeline", params, (timeline, status)=>
+      $(".friendIcon").remove()
+      $("#addFriendButton").removeClass("loading")
       @updateActiveUser(timeline)
       if @allTimeline.length == 0
         diffTimeline = timeline
@@ -258,7 +260,6 @@ window.maptter ?=
       diffTimeline.reverse()
       for tweet in diffTimeline
         $("div#timelineTab .statusList").prepend(@makeTweet tweet)
-      $(".loading").hide()
     false
 
   updateActiveUser: (timeline = @allTimeline)->

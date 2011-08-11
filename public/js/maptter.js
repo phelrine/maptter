@@ -343,10 +343,14 @@ if ((_ref = window.maptter) == null) {
         params.since = this.allTimeline[0].created_at;
         params.count = 40;
       }
-      $(".friendIcon").remove();
-      $(".loading").show();
+      $(".friendIcon").css({
+        visibility: "hidden"
+      });
+      $("#addFriendButton").addClass("loading");
       $.get("twitter/timeline", params, __bind(function(timeline, status) {
-        var latestID, latestTimeline, tweet, _i, _j, _len, _len2;
+        var latestID, latestTimeline, tweet, _i, _j, _len, _len2, _results;
+        $(".friendIcon").remove();
+        $("#addFriendButton").removeClass("loading");
         this.updateActiveUser(timeline);
         if (this.allTimeline.length === 0) {
           diffTimeline = timeline;
@@ -367,11 +371,12 @@ if ((_ref = window.maptter) == null) {
         this.allTimeline = $.merge(latestTimeline, this.allTimeline);
         this.updateMapTimeline(diffTimeline, true);
         diffTimeline.reverse();
+        _results = [];
         for (_j = 0, _len2 = diffTimeline.length; _j < _len2; _j++) {
           tweet = diffTimeline[_j];
-          $("div#timelineTab .statusList").prepend(this.makeTweet(tweet));
+          _results.push($("div#timelineTab .statusList").prepend(this.makeTweet(tweet)));
         }
-        return $(".loading").hide();
+        return _results;
       }, this));
       return false;
     },
