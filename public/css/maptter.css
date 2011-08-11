@@ -3,6 +3,7 @@
 
 body { 
     background: #09c;
+    font-size: small;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -171,6 +172,7 @@ div#map strong{
     font-size: 2em;
     display: none;
     position: absolute;
+    top: 10px;
     left: 200px;
 }
 
@@ -222,6 +224,7 @@ li.status div.content span.name{
 
 li.status div.content div.text{
     margin: 5px 5px 0px 3px;
+    text-align: justify;
     word-wrap: break-word;
     word-break: break-all;
 }
