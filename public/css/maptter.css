@@ -145,7 +145,7 @@ div#timelineTabs{
 
 div#timelinePane .tab{
     height: 550px;
-    background: url(./images/Fabric-12.png);
+    background: url(./images/status_bg.jpg);
     padding: 0px;
     overflow: auto;
     border: 1px #aaa solid;
