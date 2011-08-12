@@ -3,7 +3,7 @@
 
 body { 
     background: white;
-    font-sze: small;
+    font-size: small;
     background: url(./images/main_bg.png);
     background-position: center;
 }
@@ -354,7 +354,7 @@ div#map.addFriend{
 div#map div#rangeSlider {
     position: relative;
     top: 30px;
-    left: 625px;
+    left: 15px;
 }
 
 /* ------------------------------------- */
